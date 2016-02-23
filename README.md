@@ -4,11 +4,11 @@ Briefly describe your app here.
 
 ## Authors
 
-FirstName LastName ([your_email@berkeley.edu](mailto:your_email@berkeley.edu))
+Kevin Chow ([kvn_chow@berkeley.edu](mailto:kvn_chow@berkeley.edu))
 
 ## Demo Video
 
-See [your demo video title here] (https://link_to_your_video)
+See [your demo video title here] (https://github.com)
 
 ## Screenshots
 
@@ -16,5 +16,6 @@ See [your demo video title here] (https://link_to_your_video)
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Any other support
+### Images used
+* [http://images.clipartpanda.com/ms-office-clipart-292945.jpg] (http://images.clipartpanda.com/ms-office-clipart-292945.jpg)
+* [http://images.all-free-download.com/images/graphicmedium/hooded_cartoon_character_ii_117679.jpg] (http://images.all-free-download.com/images/graphicmedium/hooded_cartoon_character_ii_117679.jpg)
