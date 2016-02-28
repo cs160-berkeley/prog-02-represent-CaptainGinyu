@@ -2,4 +2,8 @@
     <string name="app_name">Lord of the Reps</string>
     <string name="welcome_message">Welcome to Lord of the Reps!</string>
     <string name="enter_zip">Enter a ZIP code:</string>
+    <string name="or">OR</string>
+    <string name="enter">Enter</string>
+    <string name="use_gps_prompt">Use GPS to get your current location:</string>
+    <string name="get_gps_location">Get GPS Location</string>
 </resources>

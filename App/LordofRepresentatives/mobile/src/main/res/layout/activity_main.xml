@@ -17,14 +17,13 @@
         android:elevation="4dp"
         android:theme="@style/LordOfTheRepsTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
-        android:id="@+id/view" />
+        android:id="@+id/actionBar" />
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView"
-        android:padding="16dp"
-        android:layout_below="@+id/view"
+        android:layout_below="@+id/actionBar"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true">
@@ -45,12 +44,15 @@
                 android:textSize="@dimen/abc_text_size_headline_material"
                 android:layout_centerHorizontal="true"
                 android:textAlignment="center"
-                android:id="@+id/title" />
+                android:id="@+id/title"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <ImageView
                 android:src="@drawable/the_dark_lord"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:id="@+id/theDarkLordImage"
                 android:layout_below="@+id/title"
                 android:layout_centerHorizontal="true"
@@ -83,6 +85,55 @@
                 android:textIsSelectable="true"
                 android:textAlignment="center"
                 android:minHeight="40dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enter"
+                android:id="@+id/enterButton"
+                android:layout_below="@+id/zipInput"
+                android:layout_centerHorizontal="true"
+                android:background="#0084ff"
+                android:layout_marginTop="10dp"
+                android:padding="5dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/or"
+                android:id="@+id/or"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/enterButton"
+                android:textColor="#005207"
+                android:layout_marginTop="20dp"
+                android:textSize="30dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/use_gps_prompt"
+                android:id="@+id/useGPSPrompt"
+                android:textColor="#000000"
+                android:layout_below="@+id/or"
+                android:textAlignment="center"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/get_gps_location"
+                android:id="@+id/useGPSButton"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/useGPSPrompt"
+                android:background="#0084ff"
+                android:padding="5dp"
+                android:layout_marginBottom="10dp" />
+
         </RelativeLayout>
     </ScrollView>
 
