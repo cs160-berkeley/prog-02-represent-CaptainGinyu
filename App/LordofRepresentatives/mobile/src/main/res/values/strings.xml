@@ -6,4 +6,5 @@
     <string name="enter">Enter</string>
     <string name="use_gps_prompt">Use GPS to get your current location:</string>
     <string name="get_gps_location">Get GPS Location</string>
+    <string name="showing_reps_at">Showing representatives at</string>
 </resources>

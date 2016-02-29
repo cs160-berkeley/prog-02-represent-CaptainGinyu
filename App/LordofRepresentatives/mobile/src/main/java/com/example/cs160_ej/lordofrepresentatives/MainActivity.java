@@ -8,6 +8,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -23,10 +25,19 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 {
     protected InputMethodManager inputMethodManager;
     protected EditText zipCodeInputField;
+
     protected Button enterButton;
     protected int enterButtonColor;
+
     protected Button useGPSButton;
     protected int useGPSButtonColor;
+
+    protected int currTypedZipCode;
+    protected TextWatcher zipInputWatcher;
+
+    public static final String DUMMY_GPS_LOCATION = "Berkeley, CA";
+
+    private boolean leavingActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,6 +46,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         setContentView(R.layout.activity_main);
         Toolbar actionBar = (Toolbar) findViewById(R.id.actionBar);
         setSupportActionBar(actionBar);
+
+        leavingActivity = false;
+
+        currTypedZipCode = -1;
 
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         zipCodeInputField = (EditText) findViewById(R.id.zipInput);
@@ -53,6 +68,50 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 return false;
             }
         });
+        zipInputWatcher = new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                try
+                {
+                    currTypedZipCode = Integer.parseInt(s.toString());
+                }
+                catch (Exception e)
+                {
+                    currTypedZipCode = -1;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+
+            }
+        };
+
+        Intent intent = getIntent();
+        if (intent != null)
+        {
+            Bundle extras = intent.getExtras();
+            if (extras != null)
+            {
+                CharSequence zipFromBefore = extras.getCharSequence("received zip", "");
+                zipCodeInputField.setText(zipFromBefore);
+                if (zipFromBefore != "")
+                {
+                    currTypedZipCode = Integer.parseInt(zipFromBefore.toString());
+                }
+            }
+        }
+
+        zipCodeInputField.addTextChangedListener(zipInputWatcher);
 
         enterButton = (Button) findViewById(R.id.enterButton);
         enterButtonColor = ((ColorDrawable) enterButton.getBackground()).getColor();
@@ -62,9 +121,20 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             public boolean onTouch(View v, MotionEvent event)
             {
                 changeButtonColor(v, event, enterButtonColor);
-                startActivity(new Intent(MainActivity.this, Congressional.class));
-                finish();
-                return false;
+                if (isValidZipCode(currTypedZipCode))
+                {
+                    if (!leavingActivity)
+                    {
+                        leavingActivity = true;
+                        Intent goToCongressional = new Intent(MainActivity.this, Congressional.class);
+                        goToCongressional.putExtra("zip", currTypedZipCode);
+                        goToCongressional.putExtra("to append", "ZIP code");
+
+                        startActivity(goToCongressional);
+                        finish();
+                    }
+                }
+                return true;
             }
         });
 
@@ -76,7 +146,16 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             public boolean onTouch(View v, MotionEvent event)
             {
                 changeButtonColor(v, event, useGPSButtonColor);
-                return false;
+                if (!leavingActivity)
+                {
+                    leavingActivity = true;
+                    Intent goToCongressional = new Intent(MainActivity.this, Congressional.class);
+                    goToCongressional.putExtra("to append", DUMMY_GPS_LOCATION);
+
+                    startActivity(goToCongressional);
+                    finish();
+                }
+                return true;
             }
         });
     }
@@ -122,5 +201,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     public void onBackPressed()
     {
         moveTaskToBack(true);
+    }
+
+    public boolean isValidZipCode(int testValue)
+    {
+        return Integer.toString(testValue).length() == 5;
     }
 }
