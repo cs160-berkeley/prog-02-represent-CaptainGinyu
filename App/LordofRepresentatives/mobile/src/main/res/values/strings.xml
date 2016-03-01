@@ -7,4 +7,7 @@
     <string name="use_gps_prompt">Use GPS to get your current location:</string>
     <string name="get_gps_location">Get GPS Location</string>
     <string name="showing_reps_at">Showing representatives at</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

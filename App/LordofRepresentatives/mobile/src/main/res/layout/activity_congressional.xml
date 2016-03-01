@@ -38,11 +38,21 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/showing_reps_at"
                 android:id="@+id/congressionalHeader"
-                android:textColor="#000000"
+                android:textColor="#222222"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp" />
+                android:layout_marginRight="16dp"
+                android:textAlignment="center" />
+
+            <fragment
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:name="com.example.cs160_ej.lordofrepresentatives.RepFragment"
+                android:id="@+id/fragment"
+                tools:layout="@layout/fragment_rep"
+                android:layout_below="@+id/congressionalHeader"
+                android:layout_margin="16dp" />
         </RelativeLayout>
     </ScrollView>
 

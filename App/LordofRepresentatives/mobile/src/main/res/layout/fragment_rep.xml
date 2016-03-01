@@ -1,0 +1,135 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.cs160_ej.lordofrepresentatives.RepFragment"
+    android:background="#ffffff">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView"
+            android:fillViewport="false" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/repImage"
+                    android:contentDescription="@null"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Unknown Person"
+                    android:id="@+id/repName"
+                    android:textColor="#222222"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/repImage"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/partyInfo"
+                    android:layout_below="@+id/repName"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Unknown Party"
+                        android:id="@+id/partyName"
+                        android:textColor="#444444"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:textSize="14dp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/partyImage"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:contentDescription="@null"
+                        android:layout_alignParentEnd="false"
+                        android:layout_alignParentStart="false"
+                        android:layout_toRightOf="@+id/partyName"
+                        android:maxHeight="14dp"
+                        android:minHeight="14dp"
+                        android:maxWidth="14dp"
+                        android:minWidth="14dp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Unknown Email"
+                    android:id="@+id/repEmail"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/partyInfo"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="#444444"
+                    android:textSize="14dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Visit Website"
+                    android:id="@+id/visitWebsiteButton"
+                    android:layout_below="@+id/repEmail"
+                    android:layout_centerHorizontal="true"
+                    android:background="#0084ff"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:padding="5dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View Last Tweet"
+                    android:id="@+id/viewLastTweetButton"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/visitWebsiteButton"
+                    android:background="#0084ff"
+                    android:padding="5dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View More Info"
+                    android:id="@+id/button"
+                    android:padding="5dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_below="@+id/viewLastTweetButton"
+                    android:layout_centerHorizontal="true"
+                    android:background="#0084ff" />
+
+            </RelativeLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+</FrameLayout>

@@ -17,7 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Congressional"></activity>
+        <activity
+            android:name=".Congressional"
+            android:parentActivityName="com.example.cs160_ej.lordofrepresentatives.MainActivity" />
+
+        <service android:name=".MobileToWearService" />
     </application>
 
 </manifest>

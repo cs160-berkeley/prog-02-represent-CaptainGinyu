@@ -14,6 +14,15 @@ public class MainActivity extends Activity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mTextView = (TextView) findViewById(R.id.text);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null)
+        {
+            mTextView.setText(extras.getString("message"));
+        }
+
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener()
         {

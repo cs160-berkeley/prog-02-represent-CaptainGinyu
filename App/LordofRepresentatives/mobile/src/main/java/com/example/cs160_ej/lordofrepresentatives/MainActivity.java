@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener
 {
@@ -38,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     public static final String DUMMY_GPS_LOCATION = "Berkeley, CA";
 
     private boolean leavingActivity;
+    private boolean showingInvalidZipToast;
+
+    private static final int SHORT_TOAST_DURATION = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         setSupportActionBar(actionBar);
 
         leavingActivity = false;
+        showingInvalidZipToast = false;
 
         currTypedZipCode = -1;
 
@@ -132,6 +137,31 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
                         startActivity(goToCongressional);
                         finish();
+                    }
+                }
+                else
+                {
+                    if (!showingInvalidZipToast)
+                    {
+                        Toast.makeText(MainActivity.this, "Invalid ZIP code", Toast.LENGTH_SHORT).show();
+                        showingInvalidZipToast = true;
+                        Thread thread = new Thread()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                try
+                                {
+                                    Thread.sleep(SHORT_TOAST_DURATION);
+                                    showingInvalidZipToast = false;
+                                }
+                                catch (Exception e)
+                                {
+
+                                }
+                            }
+                        };
+                        thread.start();
                     }
                 }
                 return true;
