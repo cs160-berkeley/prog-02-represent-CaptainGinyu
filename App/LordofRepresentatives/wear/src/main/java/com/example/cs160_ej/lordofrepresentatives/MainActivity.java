@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity
+{
 
-    private TextView mTextView;
+    //protected TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -15,13 +16,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextView = (TextView) findViewById(R.id.text);
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null)
-        {
-            mTextView.setText(extras.getString("message"));
-        }
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener()
@@ -29,7 +23,13 @@ public class MainActivity extends Activity {
             @Override
             public void onLayoutInflated(WatchViewStub stub)
             {
-                mTextView = (TextView) stub.findViewById(R.id.text);
+                /*mTextView = (TextView) stub.findViewById(R.id.text);
+
+                Bundle extras = getIntent().getExtras();
+                if (extras != null)
+                {
+                    mTextView.setText(extras.getString("message"));
+                }*/
             }
         });
     }

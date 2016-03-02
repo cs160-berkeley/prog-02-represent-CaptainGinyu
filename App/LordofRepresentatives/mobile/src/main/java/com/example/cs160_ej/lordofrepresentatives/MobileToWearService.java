@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
@@ -18,7 +19,7 @@ public class MobileToWearService extends Service
 
     public MobileToWearService()
     {
-        Log.i("hello", "dog");
+
     }
 
     @Override
@@ -33,13 +34,14 @@ public class MobileToWearService extends Service
                     @Override
                     public void onConnected(Bundle bundle)
                     {
-                        Log.i("hi", "hi");
+                        Toast.makeText(MobileToWearService.this, "Connected to Wearable Device!",
+                                Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onConnectionSuspended(int i)
                     {
-                        Log.i("hi", "shit");
+
                     }
                 })
                 .build();
@@ -55,10 +57,8 @@ public class MobileToWearService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Log.i("FUCK", "penis");
         if (intent != null)
         {
-            Log.i("FUCK", "poop");
             Bundle extras = intent.getExtras();
             if (extras != null)
             {
@@ -69,7 +69,6 @@ public class MobileToWearService extends Service
                     @Override
                     public void run()
                     {
-                        Log.i("FUCK", "shitty fitty");
                         apiClient.connect();
                         sendMessage("/" + messageName, messageName);
                     }

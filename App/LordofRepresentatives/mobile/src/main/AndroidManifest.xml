@@ -10,6 +10,7 @@
         android:theme="@style/LordOfTheRepsTheme">
         <activity
             android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,7 +20,10 @@
         </activity>
         <activity
             android:name=".Congressional"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName="com.example.cs160_ej.lordofrepresentatives.MainActivity" />
+
+        <activity android:name=".RepFragmentActivity"></activity>
 
         <service android:name=".MobileToWearService" />
     </application>

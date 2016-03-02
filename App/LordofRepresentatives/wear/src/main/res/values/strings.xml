@@ -2,4 +2,6 @@
     <string name="app_name">Lord of the Reps</string>
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
+    <string name="welcome_main">Welcome!</string>
+    <string name="welcome_instructions">Start from the mobile app!</string>
 </resources>
