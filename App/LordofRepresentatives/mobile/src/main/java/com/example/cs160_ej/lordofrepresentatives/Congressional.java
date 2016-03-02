@@ -37,9 +37,9 @@ public class Congressional extends AppCompatActivity
 
         congressionalHeader = (TextView) findViewById(R.id.congressionalHeader);
         congressionalHeader.setText(congressionalHeader.getText() + toAppend);
-        /*Intent testIntent = new Intent(getBaseContext(), MobileToWearService.class);
+        Intent testIntent = new Intent(getBaseContext(), MobileToWearService.class);
         testIntent.putExtra("message", "RAAAAAAAAAAAAAAAAAAAWR!!!!!!");
-        startService(testIntent);*/
+        startService(testIntent);
     }
 
     @Override

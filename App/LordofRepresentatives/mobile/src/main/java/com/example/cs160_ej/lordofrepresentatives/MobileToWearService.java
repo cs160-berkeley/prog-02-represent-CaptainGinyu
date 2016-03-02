@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
@@ -17,6 +18,7 @@ public class MobileToWearService extends Service
 
     public MobileToWearService()
     {
+        Log.i("hello", "dog");
     }
 
     @Override
@@ -31,13 +33,13 @@ public class MobileToWearService extends Service
                     @Override
                     public void onConnected(Bundle bundle)
                     {
-
+                        Log.i("hi", "hi");
                     }
 
                     @Override
                     public void onConnectionSuspended(int i)
                     {
-
+                        Log.i("hi", "shit");
                     }
                 })
                 .build();
@@ -53,17 +55,28 @@ public class MobileToWearService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Bundle extras = intent.getExtras();
-
-        new Thread(new Runnable()
+        Log.i("FUCK", "penis");
+        if (intent != null)
         {
-            @Override
-            public void run()
+            Log.i("FUCK", "poop");
+            Bundle extras = intent.getExtras();
+            if (extras != null)
             {
+                final String messageName = extras.getString("message");
 
+                new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        Log.i("FUCK", "shitty fitty");
+                        apiClient.connect();
+                        sendMessage("/" + messageName, messageName);
+                    }
+                })
+                .start();
             }
-        })
-        .start();
+        }
 
         return START_STICKY;
     }
