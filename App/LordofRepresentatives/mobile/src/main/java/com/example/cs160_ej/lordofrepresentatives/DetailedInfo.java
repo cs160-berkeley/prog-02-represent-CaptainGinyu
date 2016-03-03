@@ -2,9 +2,6 @@ package com.example.cs160_ej.lordofrepresentatives;
 
 import java.util.HashMap;
 
-/**
- * Created by cs160-ej on 3/2/16.
- */
 public class DetailedInfo
 {
     public String endOfTermDate;

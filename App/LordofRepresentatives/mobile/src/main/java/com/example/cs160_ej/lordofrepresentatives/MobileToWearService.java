@@ -34,8 +34,7 @@ public class MobileToWearService extends Service
                     @Override
                     public void onConnected(Bundle bundle)
                     {
-                        Toast.makeText(MobileToWearService.this, "Connected to Wearable Device!",
-                                Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override

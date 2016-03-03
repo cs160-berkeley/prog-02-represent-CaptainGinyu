@@ -1,12 +1,18 @@
 package com.example.cs160_ej.lordofrepresentatives;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,6 +23,9 @@ public class Congressional extends AppCompatActivity
     protected int receivedZipCode;
     protected TextView congressionalHeader;
 
+    protected Button nextButton;
+    protected Button prevButton;
+
     protected int currRepIndex;
 
     protected ArrayList<RepresentativeInfo> dummyRepInfo;
@@ -26,6 +35,7 @@ public class Congressional extends AppCompatActivity
         dummyRepInfo = new ArrayList<RepresentativeInfo>();
         RepresentativeInfo rep1 = new RepresentativeInfo(
                 "Ian McDiarmid",
+                R.drawable.palpatine,
                 "Republican",
                 "willBeEmperor@hotmail.com",
                 "emperorpalpatine.com",
@@ -36,6 +46,7 @@ public class Congressional extends AppCompatActivity
         rep1.detailedInfo.billsAndDates.put("2010", "Anti-Jedi Law");
         RepresentativeInfo rep2 = new RepresentativeInfo(
                 "Eric Paulos",
+                R.drawable.paulos,
                 "Democrat",
                 "paulos@paulos.gov",
                 "yourdesignisbad.com",
@@ -46,6 +57,7 @@ public class Congressional extends AppCompatActivity
         rep2.detailedInfo.billsAndDates.put("2017", "The Good Design Initiative");
         RepresentativeInfo rep3 = new RepresentativeInfo(
                 "Donald Duck",
+                R.drawable.donald_duck,
                 "Independent",
                 "makedisneygreatagain@makedisneygreatagain.com",
                 "makedisneygreatagain.com",
@@ -67,6 +79,10 @@ public class Congressional extends AppCompatActivity
         setSupportActionBar(actionBar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        nextButton = (Button) findViewById(R.id.next);
+        prevButton = (Button) findViewById(R.id.previous);
 
         receivedZipCode = -1;
 
@@ -90,9 +106,6 @@ public class Congressional extends AppCompatActivity
 
         congressionalHeader = (TextView) findViewById(R.id.congressionalHeader);
         congressionalHeader.setText(congressionalHeader.getText() + toAppend);
-        Intent testIntent = new Intent(getBaseContext(), MobileToWearService.class);
-        testIntent.putExtra("message", "RAAAAAAAAAAAAAAAAAAAWR!!!!!!");
-        startService(testIntent);
     }
 
     protected void updateRepInfo()
@@ -102,6 +115,7 @@ public class Congressional extends AppCompatActivity
         RepresentativeInfo representativeInfo = dummyRepInfo.get(currRepIndex);
 
         argsForFragment.putString("name", representativeInfo.name);
+        argsForFragment.putInt("repImageReference", representativeInfo.repImageReference);
         argsForFragment.putString("party", representativeInfo.party);
         argsForFragment.putString("email", representativeInfo.email);
         argsForFragment.putString("website", representativeInfo.website);
@@ -113,6 +127,11 @@ public class Congressional extends AppCompatActivity
         transaction.replace(R.id.repInfoDisplay, currRepFragment);
 
         transaction.commit();
+
+        Intent wearIntent = new Intent(getBaseContext(), MobileToWearService.class);
+        wearIntent.putExtra("name", representativeInfo.name);
+        wearIntent.putExtra("party", representativeInfo.party);
+        startService(wearIntent);
     }
 
     @Override
@@ -137,5 +156,19 @@ public class Congressional extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean changeButtonColor(View view, MotionEvent motionEvent, int origColor)
+    {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+        {
+            ((Button) view).setBackgroundColor(Color.GREEN);
+        }
+        else
+        {
+            ((Button) view).setBackgroundColor(origColor);
+        }
+
+        return true;
     }
 }

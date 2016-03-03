@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         setContentView(R.layout.activity_main);
         Toolbar actionBar = (Toolbar) findViewById(R.id.actionBar);
         setSupportActionBar(actionBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         leavingActivity = false;
         showingInvalidZipToast = false;

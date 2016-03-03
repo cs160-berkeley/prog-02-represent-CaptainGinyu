@@ -26,7 +26,13 @@
                     android:id="@+id/repImage"
                     android:contentDescription="@null"
                     android:layout_centerHorizontal="true"
-                    android:layout_margin="16dp" />
+                    android:layout_margin="16dp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/unknown"
+                    android:minHeight="200dp"
+                    android:maxWidth="200dp"
+                    android:maxHeight="200dp"
+                    android:minWidth="200dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -65,15 +71,16 @@
                         android:id="@+id/partyImage"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
                         android:contentDescription="@null"
                         android:layout_alignParentEnd="false"
                         android:layout_alignParentStart="false"
                         android:layout_toRightOf="@+id/partyName"
-                        android:maxHeight="14dp"
-                        android:minHeight="14dp"
-                        android:maxWidth="14dp"
-                        android:minWidth="14dp" />
+                        android:src="@drawable/unknown"
+                        android:adjustViewBounds="true"
+                        android:maxHeight="20dp"
+                        android:maxWidth="20dp"
+                        android:minHeight="20dp"
+                        android:minWidth="20dp" />
                 </RelativeLayout>
 
                 <TextView
