@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ public class RealMain extends Activity
         partiesToColors.put("Republican", Color.rgb(255, 125, 125));
         partiesToColors.put("Democrat", Color.rgb(125, 150, 255));
         partiesToColors.put("Unknown Party", Color.rgb(255, 245, 118));
+        partiesToColors.put("Independent", Color.rgb(255, 245, 118));
 
         nameText = (TextView) findViewById(R.id.name);
         partyText = (TextView) findViewById(R.id.party);
@@ -39,7 +41,7 @@ public class RealMain extends Activity
 
         if (receivedIntent != null)
         {
-            Bundle extras = new Bundle();
+            Bundle extras = receivedIntent.getExtras();
 
             nameText.setText(extras.getString("name", nameText.getText().toString()));
             String receivedPartyString = extras.getString("party", partyText.getText().toString());

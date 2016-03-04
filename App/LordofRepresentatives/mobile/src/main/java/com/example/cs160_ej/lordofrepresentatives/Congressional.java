@@ -1,10 +1,9 @@
 package com.example.cs160_ej.lordofrepresentatives;
 
-import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Congressional extends AppCompatActivity
 {
@@ -25,10 +25,15 @@ public class Congressional extends AppCompatActivity
 
     protected Button nextButton;
     protected Button prevButton;
+    protected int nextButtonColor;
+    protected int prevButtonColor;
 
     protected int currRepIndex;
 
     protected ArrayList<RepresentativeInfo> dummyRepInfo;
+
+    public static boolean mobileSideReady = true;
+    public static boolean wearSideReady = true;
 
     public void setUpDummyRepInfo()
     {
@@ -83,6 +88,8 @@ public class Congressional extends AppCompatActivity
 
         nextButton = (Button) findViewById(R.id.next);
         prevButton = (Button) findViewById(R.id.previous);
+        nextButtonColor = ((ColorDrawable) nextButton.getBackground()).getColor();
+        prevButtonColor = ((ColorDrawable) prevButton.getBackground()).getColor();
 
         receivedZipCode = -1;
 
@@ -106,6 +113,121 @@ public class Congressional extends AppCompatActivity
 
         congressionalHeader = (TextView) findViewById(R.id.congressionalHeader);
         congressionalHeader.setText(congressionalHeader.getText() + toAppend);
+
+        nextButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                changeButtonColor(v, event, nextButtonColor);
+
+                /*Thread thread = new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        try
+                        {
+                            if (mobileSideReady && wearSideReady)
+                            {
+                                mobileSideReady = false;
+                                wearSideReady = false;
+                                currRepIndex = (currRepIndex + 1) % dummyRepInfo.size();
+                                updateRepInfo();
+                            }
+                            Thread.sleep(5000);
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
+
+                };
+                thread.start();*/
+                /*if (mobileSideReady && wearSideReady) {
+                    mobileSideReady = false;
+                    wearSideReady = false;
+                    //currRepIndex = (currRepIndex + 1) % dummyRepInfo.size();
+                    //Random tester = new Random();
+                    //int test = tester.nextInt();
+                    //Log.i("SHIT", Integer.toString(test) + " " + Integer.toString(currRepIndex));
+                    updateRepInfo();
+                }*/
+
+                if (mobileSideReady) {
+                    mobileSideReady = false;
+                    currRepIndex = (currRepIndex + 1) % dummyRepInfo.size();
+                    Random tester = new Random();
+                    int test = tester.nextInt();
+                    Log.i("SHIT", Integer.toString(test) + " " + Integer.toString(currRepIndex));
+                    updateRepInfo();
+                }
+
+                return true;
+            }
+        });
+        prevButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                changeButtonColor(v, event, prevButtonColor);
+
+                /*Thread thread = new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        try
+                        {
+                            if (mobileSideReady && wearSideReady)
+                            {
+                                mobileSideReady = false;
+                                wearSideReady = false;
+                                currRepIndex--;
+                                if (currRepIndex < 0)
+                                {
+                                    currRepIndex = dummyRepInfo.size() - 1;
+                                }
+                                updateRepInfo();
+                            }
+                            Thread.sleep(5000);
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
+                };
+                thread.start();*/
+
+                /*if (mobileSideReady && wearSideReady)
+                {
+                    mobileSideReady = false;
+                    wearSideReady = false;
+                    currRepIndex--;
+                    if (currRepIndex < 0)
+                    {
+                        currRepIndex = dummyRepInfo.size() - 1;
+                    }
+                    updateRepInfo();
+                }*/
+
+                if (mobileSideReady)
+                {
+                    mobileSideReady = false;
+                    currRepIndex--;
+                    if (currRepIndex < 0)
+                    {
+                        currRepIndex = dummyRepInfo.size() - 1;
+                    }
+                    Random tester = new Random();
+                    int test = tester.nextInt();
+                    Log.i("SHIT", Integer.toString(test) + " " + Integer.toString(currRepIndex));
+                    updateRepInfo();
+                }
+
+                return true;
+            }
+        });
     }
 
     protected void updateRepInfo()

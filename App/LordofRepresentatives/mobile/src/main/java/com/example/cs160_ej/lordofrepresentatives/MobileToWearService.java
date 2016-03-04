@@ -4,8 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageApi;
@@ -54,14 +52,15 @@ public class MobileToWearService extends Service
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
+    public int onStartCommand(final Intent intent, int flags, int startId)
     {
         if (intent != null)
         {
             Bundle extras = intent.getExtras();
             if (extras != null)
             {
-                final String messageName = extras.getString("message");
+                final String name = extras.getString("name");
+                final String party = extras.getString("party");
 
                 new Thread(new Runnable()
                 {
@@ -69,7 +68,8 @@ public class MobileToWearService extends Service
                     public void run()
                     {
                         apiClient.connect();
-                        sendMessage("/" + messageName, messageName);
+                        sendMessage("RealMain", name + "," + party);
+                        Congressional.wearSideReady = true;
                     }
                 })
                 .start();

@@ -1,13 +1,13 @@
 package com.example.cs160_ej.lordofrepresentatives;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,6 +61,8 @@ public class RepFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
+        Congressional.mobileSideReady = true;
+
         Context context = getContext();
         partiesToLogos = new HashMap<String, Drawable>();
         partiesToLogos.put("Republican", ContextCompat.getDrawable(context, R.drawable.republican));
@@ -72,6 +74,7 @@ public class RepFragment extends Fragment
         partiesToColors.put("Republican", Color.rgb(255, 125, 125));
         partiesToColors.put("Democrat", Color.rgb(125, 150, 255));
         partiesToColors.put("Unknown Party", Color.rgb(255, 245, 118));
+        partiesToColors.put("Independent", Color.rgb(255, 245, 118));
 
 
         nameText = (TextView) view.findViewById(R.id.repName);
@@ -160,6 +163,13 @@ public class RepFragment extends Fragment
             public boolean onTouch(View v, MotionEvent event)
             {
                 changeButtonColor(v, event, viewMoreInfoButtonColor);
+                if (!pressedViewMoreInfoButton)
+                {
+                    pressedViewMoreInfoButton = true;
+                    Intent goToDetailed = new Intent(getActivity(), DetailedInfoActivity.class);
+
+                    startActivity(goToDetailed);
+                }
                 return true;
             }
         });

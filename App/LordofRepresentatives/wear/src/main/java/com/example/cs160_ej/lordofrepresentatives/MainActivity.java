@@ -3,13 +3,9 @@ package com.example.cs160_ej.lordofrepresentatives;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
-import android.widget.TextView;
 
 public class MainActivity extends Activity
 {
-
-    //protected TextView mTextView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -23,13 +19,7 @@ public class MainActivity extends Activity
             @Override
             public void onLayoutInflated(WatchViewStub stub)
             {
-                /*mTextView = (TextView) stub.findViewById(R.id.text);
 
-                Bundle extras = getIntent().getExtras();
-                if (extras != null)
-                {
-                    mTextView.setText(extras.getString("message"));
-                }*/
             }
         });
     }

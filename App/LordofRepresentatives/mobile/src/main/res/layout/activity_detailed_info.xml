@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.cs160_ej.lordofrepresentatives.DetailedInfoActivity"
+    android:background="#f0f0f0">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/LordOfTheRepsTheme"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        android:id="@+id/actionBar" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/actionBar"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/repImage"
+                android:contentDescription="@null"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="16dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/unknown"
+                android:minHeight="200dp"
+                android:maxWidth="200dp"
+                android:maxHeight="200dp"
+                android:minWidth="200dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Unknown Person"
+                android:id="@+id/repName"
+                android:textColor="#222222"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/repImage"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/partyInfo"
+                android:layout_below="@+id/repName"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Unknown Party"
+                    android:id="@+id/partyName"
+                    android:textColor="#444444"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textSize="14dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/partyImage"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="16dp"
+                    android:contentDescription="@null"
+                    android:layout_alignParentEnd="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_toRightOf="@+id/partyName"
+                    android:src="@drawable/unknown"
+                    android:adjustViewBounds="true"
+                    android:maxHeight="20dp"
+                    android:maxWidth="20dp"
+                    android:minHeight="20dp"
+                    android:minWidth="20dp" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Unknown Email"
+                android:id="@+id/repEmail"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/partyInfo"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="#444444"
+                android:textSize="14dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="End of Term: Unknown"
+                android:id="@+id/endOfTerm"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/repEmail"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="#444444"
+                android:textSize="14dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Name Of Committee: Unknown"
+                android:id="@+id/committee"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/endOfTerm"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="#444444"
+                android:textSize="14dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Recent Bills Sponsored:"
+                android:id="@+id/billsListTitle"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/committee"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="#444444"
+                android:textSize="14dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unknown"
+                android:id="@+id/billsList"
+                android:layout_below="@+id/billsListTitle"
+                android:layout_centerHorizontal="true"
+                android:textColor="#444444" />
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

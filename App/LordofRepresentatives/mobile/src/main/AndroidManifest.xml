@@ -21,11 +21,20 @@
         <activity
             android:name=".Congressional"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName="com.example.cs160_ej.lordofrepresentatives.MainActivity" />
-
-        <activity android:name=".RepFragmentActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".RepFragmentActivity" />
 
         <service android:name=".MobileToWearService" />
+
+        <activity
+            android:name=".DetailedInfoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:parentActivityName=".MainActivity" />
+
+        <service
+            android:name=".MobileListener"
+            android:enabled="false"
+            android:exported="false"></service>
     </application>
 
 </manifest>
