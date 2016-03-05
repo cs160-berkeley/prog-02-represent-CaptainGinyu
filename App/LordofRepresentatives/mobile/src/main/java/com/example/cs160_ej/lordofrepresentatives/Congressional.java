@@ -242,6 +242,7 @@ public class Congressional extends AppCompatActivity
         argsForFragment.putString("email", representativeInfo.email);
         argsForFragment.putString("website", representativeInfo.website);
         argsForFragment.putString("lastTweet", representativeInfo.lastTweet);
+        argsForFragment.putInt("numReps", dummyRepInfo.size());
 
         currRepFragment.setArguments(argsForFragment);
 
