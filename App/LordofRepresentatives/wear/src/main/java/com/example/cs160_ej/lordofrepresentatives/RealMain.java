@@ -20,6 +20,8 @@ public class RealMain extends Activity
 
     protected HashMap<String, Integer> partiesToColors;
 
+    protected static Activity lingeringActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -48,5 +50,12 @@ public class RealMain extends Activity
             partyText.setText(receivedPartyString);
             root.setBackgroundColor(partiesToColors.get(receivedPartyString));
         }
+
+        if (lingeringActivity != null)
+        {
+            lingeringActivity.finish();
+            lingeringActivity = null;
+        }
+        lingeringActivity = this;
     }
 }

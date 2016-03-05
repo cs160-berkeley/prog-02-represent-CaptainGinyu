@@ -1,5 +1,6 @@
 package com.example.cs160_ej.lordofrepresentatives;
 
+import android.support.v4.app.FragmentManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.FragmentTransaction;
@@ -114,114 +115,36 @@ public class Congressional extends AppCompatActivity
         congressionalHeader = (TextView) findViewById(R.id.congressionalHeader);
         congressionalHeader.setText(congressionalHeader.getText() + toAppend);
 
-        nextButton.setOnTouchListener(new View.OnTouchListener() {
+        nextButton.setOnTouchListener(new View.OnTouchListener()
+        {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View v, MotionEvent event)
+            {
                 changeButtonColor(v, event, nextButtonColor);
 
-                /*Thread thread = new Thread()
+                if (event.getAction() == MotionEvent.ACTION_UP)
                 {
-                    @Override
-                    public void run()
-                    {
-                        try
-                        {
-                            if (mobileSideReady && wearSideReady)
-                            {
-                                mobileSideReady = false;
-                                wearSideReady = false;
-                                currRepIndex = (currRepIndex + 1) % dummyRepInfo.size();
-                                updateRepInfo();
-                            }
-                            Thread.sleep(5000);
-                        }
-                        catch (Exception e)
-                        {
-
-                        }
-                    }
-
-                };
-                thread.start();*/
-                /*if (mobileSideReady && wearSideReady) {
-                    mobileSideReady = false;
-                    wearSideReady = false;
-                    //currRepIndex = (currRepIndex + 1) % dummyRepInfo.size();
-                    //Random tester = new Random();
-                    //int test = tester.nextInt();
-                    //Log.i("SHIT", Integer.toString(test) + " " + Integer.toString(currRepIndex));
-                    updateRepInfo();
-                }*/
-
-                if (mobileSideReady) {
-                    mobileSideReady = false;
                     currRepIndex = (currRepIndex + 1) % dummyRepInfo.size();
-                    Random tester = new Random();
-                    int test = tester.nextInt();
-                    Log.i("SHIT", Integer.toString(test) + " " + Integer.toString(currRepIndex));
                     updateRepInfo();
                 }
 
                 return true;
             }
         });
-        prevButton.setOnTouchListener(new View.OnTouchListener() {
+        prevButton.setOnTouchListener(new View.OnTouchListener()
+        {
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
                 changeButtonColor(v, event, prevButtonColor);
 
-                /*Thread thread = new Thread()
+                if (event.getAction() == MotionEvent.ACTION_UP)
                 {
-                    @Override
-                    public void run()
-                    {
-                        try
-                        {
-                            if (mobileSideReady && wearSideReady)
-                            {
-                                mobileSideReady = false;
-                                wearSideReady = false;
-                                currRepIndex--;
-                                if (currRepIndex < 0)
-                                {
-                                    currRepIndex = dummyRepInfo.size() - 1;
-                                }
-                                updateRepInfo();
-                            }
-                            Thread.sleep(5000);
-                        }
-                        catch (Exception e)
-                        {
-
-                        }
-                    }
-                };
-                thread.start();*/
-
-                /*if (mobileSideReady && wearSideReady)
-                {
-                    mobileSideReady = false;
-                    wearSideReady = false;
                     currRepIndex--;
                     if (currRepIndex < 0)
                     {
                         currRepIndex = dummyRepInfo.size() - 1;
                     }
-                    updateRepInfo();
-                }*/
-
-                if (mobileSideReady)
-                {
-                    mobileSideReady = false;
-                    currRepIndex--;
-                    if (currRepIndex < 0)
-                    {
-                        currRepIndex = dummyRepInfo.size() - 1;
-                    }
-                    Random tester = new Random();
-                    int test = tester.nextInt();
-                    Log.i("SHIT", Integer.toString(test) + " " + Integer.toString(currRepIndex));
                     updateRepInfo();
                 }
 
@@ -242,7 +165,6 @@ public class Congressional extends AppCompatActivity
         argsForFragment.putString("email", representativeInfo.email);
         argsForFragment.putString("website", representativeInfo.website);
         argsForFragment.putString("lastTweet", representativeInfo.lastTweet);
-        argsForFragment.putInt("numReps", dummyRepInfo.size());
 
         currRepFragment.setArguments(argsForFragment);
 
@@ -250,11 +172,6 @@ public class Congressional extends AppCompatActivity
         transaction.replace(R.id.repInfoDisplay, currRepFragment);
 
         transaction.commit();
-
-        Intent wearIntent = new Intent(getBaseContext(), MobileToWearService.class);
-        wearIntent.putExtra("name", representativeInfo.name);
-        wearIntent.putExtra("party", representativeInfo.party);
-        startService(wearIntent);
     }
 
     @Override

@@ -7,11 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -51,11 +48,6 @@ public class RepFragment extends Fragment
     private static final int SHORT_TOAST_DURATION = 2000;
 
     protected String website;
-
-    protected ViewPager viewPager;
-    protected PagerAdapter pagerAdapter;
-
-    protected static int numReps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,19 +95,19 @@ public class RepFragment extends Fragment
         goingToWebsite = false;
         pressedViewMoreInfoButton = false;
 
-        viewPager = (ViewPager) view.findViewById(R.id.pager);
-        pagerAdapter = new RepFragmentPagerAdapter(getActivity().getSupportFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
-
         repImage = (ImageView) view.findViewById(R.id.repImage);
         partyImage = (ImageView) view.findViewById(R.id.partyImage);
+
+        String receivedNameString = nameText.getText().toString();
+        String receivedPartyString = partyText.getText().toString();
 
         Bundle args = getArguments();
         if (args != null)
         {
-            nameText.setText(args.getString("name", nameText.getText().toString()));
+            receivedNameString = args.getString("name", nameText.getText().toString());
+            nameText.setText(receivedNameString);
 
-            String receivedPartyString = args.getString("party", partyText.getText().toString());
+            receivedPartyString = args.getString("party", partyText.getText().toString());
             partyText.setText(receivedPartyString);
             partyImage.setImageDrawable(partiesToLogos.get(receivedPartyString));
             root.setBackgroundColor(partiesToColors.get(receivedPartyString));
@@ -125,8 +117,6 @@ public class RepFragment extends Fragment
             repImage.setImageResource(args.getInt("repImageReference", R.drawable.unknown));
 
             website = args.getString("website", "404 error: Website not found");
-
-            numReps = args.getInt("numReps", 3);
         }
 
         visitWebsiteButton.setOnTouchListener(new View.OnTouchListener()
@@ -172,14 +162,11 @@ public class RepFragment extends Fragment
                 return true;
             }
         });
-        viewMoreInfoButton.setOnTouchListener(new View.OnTouchListener()
-        {
+        viewMoreInfoButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
+            public boolean onTouch(View v, MotionEvent event) {
                 changeButtonColor(v, event, viewMoreInfoButtonColor);
-                if (!pressedViewMoreInfoButton)
-                {
+                if (!pressedViewMoreInfoButton) {
                     pressedViewMoreInfoButton = true;
                     Intent goToDetailed = new Intent(getActivity(), DetailedInfoActivity.class);
 
@@ -188,6 +175,11 @@ public class RepFragment extends Fragment
                 return true;
             }
         });
+
+        Intent wearIntent = new Intent(getContext(), MobileToWearService.class);
+        wearIntent.putExtra("name", receivedNameString);
+        wearIntent.putExtra("party", receivedPartyString);
+        getActivity().startService(wearIntent);
     }
 
     public boolean changeButtonColor(View view, MotionEvent motionEvent, int origColor)
@@ -203,25 +195,4 @@ public class RepFragment extends Fragment
 
         return true;
     }
-
-    protected class RepFragmentPagerAdapter extends FragmentStatePagerAdapter
-    {
-        public RepFragmentPagerAdapter(FragmentManager fm)
-        {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position)
-        {
-            return new RepFragment();
-        }
-
-        @Override
-        public int getCount()
-        {
-            return numReps;
-        }
-    }
 }
-

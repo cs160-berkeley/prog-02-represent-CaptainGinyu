@@ -1,6 +1,8 @@
 package com.example.cs160_ej.lordofrepresentatives;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.google.android.gms.wearable.MessageEvent;
@@ -17,7 +19,22 @@ public class WearListener extends WearableListenerService
 
         if (path.equals("RealMain"))
         {
+            try
+            {
+                ActivityInfo[] runningActivities = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_ACTIVITIES).activities;
+
+                for (int i = 0; i < runningActivities.length; i++)
+                {
+
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
             Intent intent = new Intent(this, RealMain.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             String dataReceived = new String(messageEvent.getData(), StandardCharsets.UTF_8);
@@ -27,8 +44,6 @@ public class WearListener extends WearableListenerService
 
             intent.putExtra("name", name);
             intent.putExtra("party", party);
-
-            Log.i("blahfdsf", dataReceived);
 
             startActivity(intent);
         }
