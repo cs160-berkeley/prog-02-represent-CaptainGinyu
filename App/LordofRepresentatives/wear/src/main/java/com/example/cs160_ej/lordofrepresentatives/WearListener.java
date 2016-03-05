@@ -19,20 +19,6 @@ public class WearListener extends WearableListenerService
 
         if (path.equals("RealMain"))
         {
-            try
-            {
-                ActivityInfo[] runningActivities = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_ACTIVITIES).activities;
-
-                for (int i = 0; i < runningActivities.length; i++)
-                {
-
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-
             Intent intent = new Intent(this, RealMain.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -47,6 +33,9 @@ public class WearListener extends WearableListenerService
 
             startActivity(intent);
         }
-
+        else
+        {
+            super.onMessageReceived(messageEvent);
+        }
     }
 }

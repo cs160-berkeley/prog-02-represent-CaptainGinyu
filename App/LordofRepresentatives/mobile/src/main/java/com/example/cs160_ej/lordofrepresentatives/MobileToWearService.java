@@ -69,7 +69,6 @@ public class MobileToWearService extends Service
                     {
                         apiClient.connect();
                         sendMessage("RealMain", name + "," + party);
-                        Congressional.wearSideReady = true;
                     }
                 })
                 .start();

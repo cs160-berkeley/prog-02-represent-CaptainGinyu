@@ -1,6 +1,5 @@
 package com.example.cs160_ej.lordofrepresentatives;
 
-import android.support.v4.app.FragmentManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.FragmentTransaction;
@@ -16,7 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Congressional extends AppCompatActivity
 {
@@ -31,12 +29,13 @@ public class Congressional extends AppCompatActivity
 
     protected int currRepIndex;
 
-    protected ArrayList<RepresentativeInfo> dummyRepInfo;
+    public static ArrayList<RepresentativeInfo> dummyRepInfo;
+    static
+    {
+        setUpDummyRepInfo();
+    }
 
-    public static boolean mobileSideReady = true;
-    public static boolean wearSideReady = true;
-
-    public void setUpDummyRepInfo()
+    public static void setUpDummyRepInfo()
     {
         dummyRepInfo = new ArrayList<RepresentativeInfo>();
         RepresentativeInfo rep1 = new RepresentativeInfo(

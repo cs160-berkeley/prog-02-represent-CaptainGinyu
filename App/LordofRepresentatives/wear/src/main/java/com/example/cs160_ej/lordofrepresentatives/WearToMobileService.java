@@ -25,12 +25,10 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
     public void onCreate()
     {
         super.onCreate();
-        //initialize the googleAPIClient for message passing
         mWatchApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .build();
-        //and actually connect it
         mWatchApiClient.connect();
     }
 
@@ -48,6 +46,8 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
         return null;
     }
 
+    //TODO: find out why this isn't working
+
     @Override
     public void onConnected(Bundle bundle)
     {
@@ -63,9 +63,37 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
                         //when we find a connected node, we populate the list declared above
                         //finally, we can send a message
                         //sendMessage("/send_toast", "Good job!");
-                        //Log.d("T", "sent");
+                        Log.i("HEY", "sent");
                     }
                 });
+    }
+
+    @Override
+    public int onStartCommand(final Intent intent, int flags, int startId)
+    {
+        Log.i("HEY", "started");
+        if (intent != null)
+        {
+            Bundle extras = intent.getExtras();
+            if (extras != null)
+            {
+                final String index = extras.getString("index");
+
+                new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        Log.i("HEY", "running");
+                        mWatchApiClient.connect();
+                        sendMessage("DetailedInfoActivity", index);
+                    }
+                })
+                .start();
+            }
+        }
+
+        return START_STICKY;
     }
 
     @Override

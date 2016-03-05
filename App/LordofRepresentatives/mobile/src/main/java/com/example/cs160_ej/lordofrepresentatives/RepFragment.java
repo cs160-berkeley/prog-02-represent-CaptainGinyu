@@ -62,8 +62,6 @@ public class RepFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        Congressional.mobileSideReady = true;
-
         Context context = getContext();
         partiesToLogos = new HashMap<String, Drawable>();
         partiesToLogos.put("Republican", ContextCompat.getDrawable(context, R.drawable.republican));
