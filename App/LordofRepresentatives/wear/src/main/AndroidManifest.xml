@@ -30,10 +30,7 @@
 
         <activity android:name=".RealMain" />
 
-        <service
-            android:name=".WearToMobileService"
-            android:enabled="false"
-            android:exported="false" />
+        <service android:name=".WearToMobileService" />
 
         <activity android:name=".VoteViewActivity"></activity>
     </application>

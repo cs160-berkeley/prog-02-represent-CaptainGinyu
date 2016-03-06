@@ -30,6 +30,7 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
                 .addConnectionCallbacks(this)
                 .build();
         mWatchApiClient.connect();
+        Log.i("HEY", "created");
     }
 
     @Override
@@ -46,12 +47,10 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
         return null;
     }
 
-    //TODO: find out why this isn't working
-
     @Override
     public void onConnected(Bundle bundle)
     {
-        Log.d("T", "in onconnected");
+        Log.i("HEY", "on connected");
         Wearable.NodeApi.getConnectedNodes(mWatchApiClient)
                 .setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>()
                 {
