@@ -72,15 +72,5 @@ public class RealMain extends Activity
                 return true;
             }
         });
-        detailsButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                Log.i("HEY", "clicked");
-                Intent intent = new Intent(getBaseContext(), WearToMobileService.class);
-                startService(intent);
-            }
-        });
     }
 }

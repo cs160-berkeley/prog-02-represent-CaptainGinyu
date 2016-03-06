@@ -20,6 +20,7 @@ public class MobileListener extends WearableListenerService
         if (path.equals("DetailedInfoActivity"))
         {
             Intent intent = new Intent(this, DetailedInfoActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             String dataReceived = new String(messageEvent.getData(), StandardCharsets.UTF_8);
             intent.putExtra("index", dataReceived);
             startActivity(intent);
