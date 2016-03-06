@@ -1,8 +1,13 @@
 package com.example.cs160_ej.lordofrepresentatives;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -13,7 +18,7 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
-public class RealMain extends Activity
+public class RealMain extends Activity implements SensorEventListener
 {
     protected TextView nameText;
     protected TextView partyText;
@@ -29,11 +34,21 @@ public class RealMain extends Activity
     private float y1, y2;
     private final int MIN_SWIPE_DIST = 50;
 
+    private SensorManager manager;
+    private Sensor accel;
+    private float x = 0;
+    private float y = 0;
+    private float z = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_real_main);
+
+        manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accel = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        manager.registerListener(this, accel, SensorManager.SENSOR_DELAY_NORMAL);
 
         partiesToColors = new HashMap<String, Integer>();
         partiesToColors.put("Republican", Color.rgb(255, 125, 125));
@@ -128,5 +143,35 @@ public class RealMain extends Activity
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event)
+    {
+        Sensor sensor = event.sensor;
+
+        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+        {
+
+            float currX = event.values[0];
+            float currY = event.values[1];
+            float currZ = event.values[2];
+
+            if ((currX != x) || (currY != y) || (currZ != z))
+            {
+                Intent intent = new Intent(getBaseContext(), VoteViewActivity.class);
+                startActivity(intent);
+            }
+
+            x = currX;
+            y = currY;
+            z = currZ;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy)
+    {
+
     }
 }
