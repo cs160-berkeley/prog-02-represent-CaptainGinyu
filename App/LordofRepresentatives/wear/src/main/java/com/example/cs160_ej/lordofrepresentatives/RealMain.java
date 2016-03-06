@@ -3,7 +3,6 @@ package com.example.cs160_ej.lordofrepresentatives;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,10 +18,11 @@ public class RealMain extends Activity
     protected TextView nameText;
     protected TextView partyText;
     protected Button detailsButton;
-    protected int detailsButtonColor;
     protected RelativeLayout root;
 
     protected HashMap<String, Integer> partiesToColors;
+
+    protected String index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,6 +51,7 @@ public class RealMain extends Activity
             String receivedPartyString = extras.getString("party", partyText.getText().toString());
             partyText.setText(receivedPartyString);
             root.setBackgroundColor(partiesToColors.get(receivedPartyString));
+            index = extras.getString("index", "-1");
         }
 
         detailsButton.setOnTouchListener(new View.OnTouchListener()
@@ -58,16 +59,13 @@ public class RealMain extends Activity
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
-                /*if (!leavingActivity)
+                if (event.getAction() == MotionEvent.ACTION_UP)
                 {
-                    leavingActivity = true;
                     Intent intent = new Intent(getBaseContext(), WearToMobileService.class);
-
+                    intent.putExtra("index", index);
+                    Log.i("index", "index at real main is " + index);
                     startService(intent);
-                }*/
-                Log.i("HEY", "pressed");
-                Intent intent = new Intent(getBaseContext(), WearToMobileService.class);
-                startService(intent);
+                }
 
                 return true;
             }

@@ -61,6 +61,7 @@ public class MobileToWearService extends Service
             {
                 final String name = extras.getString("name");
                 final String party = extras.getString("party");
+                final String index = extras.getString("index");
 
                 new Thread(new Runnable()
                 {
@@ -68,7 +69,7 @@ public class MobileToWearService extends Service
                     public void run()
                     {
                         apiClient.connect();
-                        sendMessage("RealMain", name + "," + party);
+                        sendMessage("RealMain", name + "," + party + "|" + index);
                     }
                 })
                 .start();

@@ -16,7 +16,6 @@ public class MobileListener extends WearableListenerService
     {
         String path = messageEvent.getPath();
 
-        Log.d("T", "in PhoneListenerService, got: " + messageEvent.getPath());
         if (path.equals("DetailedInfoActivity"))
         {
             Intent intent = new Intent(this, DetailedInfoActivity.class);

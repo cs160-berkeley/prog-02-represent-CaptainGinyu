@@ -49,6 +49,8 @@ public class RepFragment extends Fragment
 
     protected String website;
 
+    protected String index;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -115,6 +117,8 @@ public class RepFragment extends Fragment
             repImage.setImageResource(args.getInt("repImageReference", R.drawable.unknown));
 
             website = args.getString("website", "404 error: Website not found");
+
+            index = args.getString("index", "-1");
         }
 
         visitWebsiteButton.setOnTouchListener(new View.OnTouchListener()
@@ -162,12 +166,14 @@ public class RepFragment extends Fragment
         });
         viewMoreInfoButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean onTouch(View v, MotionEvent event)
+            {
                 changeButtonColor(v, event, viewMoreInfoButtonColor);
-                if (!pressedViewMoreInfoButton) {
+                if (!pressedViewMoreInfoButton)
+                {
                     pressedViewMoreInfoButton = true;
                     Intent goToDetailed = new Intent(getActivity(), DetailedInfoActivity.class);
-
+                    goToDetailed.putExtra("index", index);
                     startActivity(goToDetailed);
                 }
                 return true;
@@ -177,6 +183,8 @@ public class RepFragment extends Fragment
         Intent wearIntent = new Intent(getContext(), MobileToWearService.class);
         wearIntent.putExtra("name", receivedNameString);
         wearIntent.putExtra("party", receivedPartyString);
+        wearIntent.putExtra("index", index);
+        Log.i("index", "index at rep fragment is " + index);
         getActivity().startService(wearIntent);
     }
 

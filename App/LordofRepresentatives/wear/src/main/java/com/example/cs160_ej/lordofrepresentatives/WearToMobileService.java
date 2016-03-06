@@ -30,7 +30,6 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
                 .addConnectionCallbacks(this)
                 .build();
         mWatchApiClient.connect();
-        Log.i("HEY", "created");
     }
 
     @Override
@@ -50,9 +49,6 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
     @Override
     public void onConnected(Bundle bundle)
     {
-        final Service _this = this;
-
-        Log.i("HEY", "on connected");
         Wearable.NodeApi.getConnectedNodes(mWatchApiClient)
                 .setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>()
                 {
@@ -61,16 +57,48 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
                     {
 
                         nodes = getConnectedNodesResult.getNodes();
-                        //Log.d("T", "found nodes");
-                        //when we find a connected node, we populate the list declared above
-                        //finally, we can send a message
-                        //sendMessage("/send_toast", "Good job!");
-                        Log.i("HEY", "sent");
-                        mWatchApiClient.connect();
-                        sendMessage("DetailedInfoActivity", "blah"); //TODO: replace "blah" later
-                        _this.stopSelf();
                     }
                 });
+    }
+
+    @Override
+    public int onStartCommand(final Intent intent, int flags, int startId)
+    {
+        if (intent != null)
+        {
+            final Service _this = this;
+
+            Bundle extras = intent.getExtras();
+
+            if (extras != null)
+            {
+                final String index = extras.getString("index", "-1");
+                Log.i("index", index);
+
+                new Thread(new Runnable()
+                {
+
+                    @Override
+                    public void run()
+                    {
+                        mWatchApiClient.connect();
+                        sendMessage("DetailedInfoActivity", index);
+                        try
+                        {
+                            Thread.sleep(500);
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                        _this.stopSelf();
+                    }
+                })
+                .start();
+            }
+        }
+
+        return START_STICKY;
     }
 
     @Override

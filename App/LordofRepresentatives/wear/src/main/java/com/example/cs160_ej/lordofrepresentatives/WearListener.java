@@ -26,10 +26,13 @@ public class WearListener extends WearableListenerService
             String dataReceived = new String(messageEvent.getData(), StandardCharsets.UTF_8);
             int commaIndex = dataReceived.indexOf(',');
             String name = dataReceived.substring(0, commaIndex);
-            String party = dataReceived.substring(commaIndex + 1, dataReceived.length());
+            int pipeIndex = dataReceived.indexOf('|');
+            String party = dataReceived.substring(commaIndex + 1, pipeIndex);
+            String index = dataReceived.substring(pipeIndex + 1, dataReceived.length());
 
             intent.putExtra("name", name);
             intent.putExtra("party", party);
+            intent.putExtra("index", index);
 
             startActivity(intent);
         }
