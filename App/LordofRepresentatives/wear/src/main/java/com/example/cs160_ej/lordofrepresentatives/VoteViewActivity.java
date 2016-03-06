@@ -76,6 +76,23 @@ public class VoteViewActivity extends Activity implements SensorEventListener
             y = currY;
             z = currZ;
         }
+
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    Thread.sleep(500);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+        };
+        thread.start();
     }
 
     @Override

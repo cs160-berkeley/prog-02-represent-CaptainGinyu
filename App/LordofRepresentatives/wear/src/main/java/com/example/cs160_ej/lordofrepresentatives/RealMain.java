@@ -167,6 +167,7 @@ public class RealMain extends Activity implements SensorEventListener
             y = currY;
             z = currZ;
         }
+
     }
 
     @Override
