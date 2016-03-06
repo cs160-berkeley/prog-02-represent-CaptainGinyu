@@ -3,10 +3,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.cs160_ej.lordofrepresentatives.VoteViewActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2012\nPresidential Vote"
+        android:id="@+id/this_title"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Random County,\nRandom State"
+        android:id="@+id/county_and_state"
+        android:layout_below="@+id/this_title"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Obama votes:"
+        android:id="@+id/obama"
+        android:layout_below="@+id/county_and_state"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Romney votes:"
+        android:id="@+id/romney"
+        android:layout_below="@+id/obama"
+        android:layout_alignParentStart="false"
+        android:layout_marginLeft="25dp" />
 </RelativeLayout>
