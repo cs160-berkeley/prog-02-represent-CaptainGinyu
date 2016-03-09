@@ -47,8 +47,8 @@ public class MobileToWearService extends Service
     @Override
     public void onDestroy()
     {
-        super.onDestroy();
         apiClient.disconnect();
+        super.onDestroy();
     }
 
     @Override

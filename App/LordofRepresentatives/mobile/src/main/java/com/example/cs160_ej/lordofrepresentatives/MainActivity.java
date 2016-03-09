@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                         Intent goToCongressional = new Intent(MainActivity.this, Congressional.class);
                         goToCongressional.putExtra("zip", currTypedZipCode);
                         goToCongressional.putExtra("to append", "ZIP code");
+                        goToCongressional.putExtra("from main", true);
 
                         startActivity(goToCongressional);
                         finish();

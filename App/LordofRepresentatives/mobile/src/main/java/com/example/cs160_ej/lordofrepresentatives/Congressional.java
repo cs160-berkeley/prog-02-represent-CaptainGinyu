@@ -106,6 +106,7 @@ public class Congressional extends AppCompatActivity
                 receivedZipCode = extras.getInt("zip");
                 toAppend += " " + Integer.toString(receivedZipCode);
             }
+
             toAppend += ":";
         }
 

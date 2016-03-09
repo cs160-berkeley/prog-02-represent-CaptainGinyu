@@ -30,6 +30,8 @@ public class WearListener extends WearableListenerService
             String party = dataReceived.substring(commaIndex + 1, pipeIndex);
             String index = dataReceived.substring(pipeIndex + 1, dataReceived.length());
 
+            Log.i("wear listener", "message received");
+
             intent.putExtra("name", name);
             intent.putExtra("party", party);
             intent.putExtra("index", index);

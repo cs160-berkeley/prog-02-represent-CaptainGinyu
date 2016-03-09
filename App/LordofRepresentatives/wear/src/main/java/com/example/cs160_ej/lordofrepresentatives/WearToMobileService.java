@@ -55,7 +55,6 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
                     @Override
                     public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult)
                     {
-
                         nodes = getConnectedNodesResult.getNodes();
                     }
                 });
@@ -82,7 +81,9 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
                     public void run()
                     {
                         mWatchApiClient.connect();
+                        Log.i("wear to mobile", "going to go to detailed!");
                         sendMessage("DetailedInfoActivity", index);
+
                         try
                         {
                             Thread.sleep(500);
@@ -109,6 +110,7 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
 
     private void sendMessage(final String path, final String text)
     {
+        Log.i("wear to mobile", "number of nodes: " + nodes.size());
         for (Node node : nodes)
         {
             Wearable.MessageApi.sendMessage(

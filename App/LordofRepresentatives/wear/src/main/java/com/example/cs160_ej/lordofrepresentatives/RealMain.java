@@ -36,9 +36,11 @@ public class RealMain extends Activity implements SensorEventListener
 
     private SensorManager manager;
     private Sensor accel;
-    private float x = 0;
-    private float y = 0;
-    private float z = 0;
+    private float x = Float.NaN;
+    private float y = Float.NaN;
+    private float z = Float.NaN;
+
+    private final int MIN_SHAKE_SPEED = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -65,6 +67,7 @@ public class RealMain extends Activity implements SensorEventListener
 
         if (receivedIntent != null)
         {
+            Log.i("real main intent", "received intent");
             Bundle extras = receivedIntent.getExtras();
 
             name = extras.getString("name", nameText.getText().toString());
@@ -73,6 +76,8 @@ public class RealMain extends Activity implements SensorEventListener
             partyText.setText(party);
             root.setBackgroundColor(partiesToColors.get(party));
             index = extras.getString("index", "-1");
+            Log.i("real main intent", name);
+            Log.i("real main intent", party);
         }
 
         detailsButton.setOnTouchListener(new View.OnTouchListener()
@@ -85,7 +90,10 @@ public class RealMain extends Activity implements SensorEventListener
                     Intent intent = new Intent(getBaseContext(), WearToMobileService.class);
                     intent.putExtra("index", index);
                     Log.i("index", "index at real main is " + index);
-                    startService(intent);
+                    if (index != null)
+                    {
+                        startService(intent);
+                    }
                 }
 
                 return true;
@@ -157,16 +165,43 @@ public class RealMain extends Activity implements SensorEventListener
             float currY = event.values[1];
             float currZ = event.values[2];
 
-            if ((currX != x) || (currY != y) || (currZ != z))
+            if (!((Float.isNaN(x)) || (Float.isNaN(y)) || (Float.isNaN(z))))
             {
-                Intent intent = new Intent(getBaseContext(), VoteViewActivity.class);
-                startActivity(intent);
+                if ((Math.abs(currX - x) >= MIN_SHAKE_SPEED)
+                        || (Math.abs(currY - y) >= MIN_SHAKE_SPEED)
+                        || (Math.abs(currZ - z) >= MIN_SHAKE_SPEED))
+                {
+                    Log.i("accel", "here");
+                    Intent intent = new Intent(getBaseContext(), VoteViewActivity.class);
+                    startActivity(intent);
+                }
             }
 
             x = currX;
             y = currY;
             z = currZ;
+
+            Log.i("accel", "accel x changed, is now: " + Float.toString(x));
+            Log.i("accel", "accel y changed, is now: " + Float.toString(y));
+            Log.i("accel", "accel z changed, is now: " + Float.toString(z));
         }
+
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    Thread.sleep(500);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+        };
+        thread.start();
 
     }
 

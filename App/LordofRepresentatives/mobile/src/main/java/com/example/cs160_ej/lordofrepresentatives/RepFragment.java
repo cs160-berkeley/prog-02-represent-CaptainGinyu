@@ -185,7 +185,10 @@ public class RepFragment extends Fragment
         wearIntent.putExtra("party", receivedPartyString);
         wearIntent.putExtra("index", index);
         Log.i("index", "index at rep fragment is " + index);
-        getActivity().startService(wearIntent);
+        if (index != null)
+        {
+            getActivity().startService(wearIntent);
+        }
     }
 
     public boolean changeButtonColor(View view, MotionEvent motionEvent, int origColor)
