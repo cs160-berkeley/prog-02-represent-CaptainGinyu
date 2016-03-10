@@ -169,13 +169,14 @@ public class RepFragment extends Fragment
             public boolean onTouch(View v, MotionEvent event)
             {
                 changeButtonColor(v, event, viewMoreInfoButtonColor);
-                if (!pressedViewMoreInfoButton)
+                if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     pressedViewMoreInfoButton = true;
                     Intent goToDetailed = new Intent(getActivity(), DetailedInfoActivity.class);
                     goToDetailed.putExtra("index", index);
                     startActivity(goToDetailed);
                 }
+
                 return true;
             }
         });
