@@ -156,7 +156,7 @@ public class RealMain extends Activity implements SensorEventListener
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-        Sensor sensor = event.sensor;
+        /*Sensor sensor = event.sensor;
 
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
@@ -172,6 +172,9 @@ public class RealMain extends Activity implements SensorEventListener
                         || (Math.abs(currZ - z) >= MIN_SHAKE_SPEED))
                 {
                     Log.i("accel", "here");
+                    Log.i("accel", "accel x changed, is now: " + Float.toString(x));
+                    Log.i("accel", "accel y changed, is now: " + Float.toString(y));
+                    Log.i("accel", "accel z changed, is now: " + Float.toString(z));
                     Intent intent = new Intent(getBaseContext(), VoteViewActivity.class);
                     startActivity(intent);
                 }
@@ -180,10 +183,6 @@ public class RealMain extends Activity implements SensorEventListener
             x = currX;
             y = currY;
             z = currZ;
-
-            Log.i("accel", "accel x changed, is now: " + Float.toString(x));
-            Log.i("accel", "accel y changed, is now: " + Float.toString(y));
-            Log.i("accel", "accel z changed, is now: " + Float.toString(z));
         }
 
         Thread thread = new Thread()
@@ -201,8 +200,7 @@ public class RealMain extends Activity implements SensorEventListener
                 }
             }
         };
-        thread.start();
-
+        thread.start();*/
     }
 
     @Override

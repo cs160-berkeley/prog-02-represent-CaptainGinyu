@@ -59,7 +59,7 @@ public class VoteViewActivity extends Activity implements SensorEventListener
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-        Sensor sensor = event.sensor;
+        /*Sensor sensor = event.sensor;
 
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
@@ -76,7 +76,7 @@ public class VoteViewActivity extends Activity implements SensorEventListener
                 {
                     Log.i("accel", "here");
                     Intent intent = new Intent(getBaseContext(), VoteViewActivity.class);
-                    startActivity(intent);
+                    //startActivity(intent);
                 }
             }
 
@@ -104,7 +104,7 @@ public class VoteViewActivity extends Activity implements SensorEventListener
                 }
             }
         };
-        thread.start();
+        thread.start();*/
     }
 
     @Override
