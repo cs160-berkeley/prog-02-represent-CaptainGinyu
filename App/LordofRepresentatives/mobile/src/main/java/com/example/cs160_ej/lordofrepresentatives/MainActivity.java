@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 {
                     leavingActivity = true;
                     Intent goToCongressional = new Intent(MainActivity.this, Congressional.class);
-                    goToCongressional.putExtra("to append", DUMMY_GPS_LOCATION);
+                    goToCongressional.putExtra("doing gps", true);
 
                     startActivity(goToCongressional);
                     finish();

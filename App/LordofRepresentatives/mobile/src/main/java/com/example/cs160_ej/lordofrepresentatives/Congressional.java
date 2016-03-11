@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -25,7 +27,10 @@ import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class Congressional extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener
@@ -51,7 +56,15 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
      */
     protected Location mLastLocation;
 
+    protected double latitude;
+    protected double longitude;
+
+    protected Geocoder geocoder;
+    protected List<Address> addresses;
+
     public static ArrayList<RepresentativeInfo> dummyRepInfo;
+
+    private String initialHeader;
 
     static
     {
@@ -114,14 +127,17 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
     protected void onStart()
     {
         super.onStart();
-        mGoogleApiClient.connect();
+        if (mGoogleApiClient != null)
+        {
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
     protected void onStop()
     {
         super.onStop();
-        if (mGoogleApiClient.isConnected())
+        if ((mGoogleApiClient != null) && (mGoogleApiClient.isConnected()))
         {
             mGoogleApiClient.disconnect();
         }
@@ -138,6 +154,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+
         nextButton = (Button) findViewById(R.id.next);
         prevButton = (Button) findViewById(R.id.previous);
         nextButtonColor = ((ColorDrawable) nextButton.getBackground()).getColor();
@@ -152,11 +169,15 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         if (receivedIntent != null)
         {
             Bundle extras = receivedIntent.getExtras();
-            toAppend = "\n" + extras.getString("to append", "Unknown Location");
+            toAppend = "\n" + extras.getString("to append", "?????");
             if (toAppend.equals("\nZIP code"))
             {
                 receivedZipCode = extras.getInt("zip");
                 toAppend += " " + Integer.toString(receivedZipCode);
+            }
+            else if (extras.getBoolean("doing gps", false))
+            {
+                buildGoogleApiClient();
             }
 
             toAppend += ":";
@@ -165,7 +186,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         updateRepInfo();
 
         congressionalHeader = (TextView) findViewById(R.id.congressionalHeader);
-        congressionalHeader.setText(congressionalHeader.getText() + toAppend);
+        initialHeader = congressionalHeader.getText().toString();
+        congressionalHeader.setText(initialHeader + toAppend);
 
         nextButton.setOnTouchListener(new View.OnTouchListener()
         {
@@ -183,18 +205,14 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 return true;
             }
         });
-        prevButton.setOnTouchListener(new View.OnTouchListener()
-        {
+        prevButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
+            public boolean onTouch(View v, MotionEvent event) {
                 changeButtonColor(v, event, prevButtonColor);
 
-                if (event.getAction() == MotionEvent.ACTION_UP)
-                {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     currRepIndex--;
-                    if (currRepIndex < 0)
-                    {
+                    if (currRepIndex < 0) {
                         currRepIndex = dummyRepInfo.size() - 1;
                     }
                     updateRepInfo();
@@ -203,8 +221,6 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 return true;
             }
         });
-
-        buildGoogleApiClient();
     }
 
     protected void updateRepInfo()
@@ -270,7 +286,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
      * Runs when a GoogleApiClient object successfully connects.
      */
     @Override
-    public void onConnected(Bundle connectionHint) {
+    public void onConnected(Bundle connectionHint)
+    {
         // Provides a simple way of getting a device's location and is well suited for
         // applications that do not require a fine-grained location and that do not need location
         // updates. Gets the best and most recent location currently available, which may be null
@@ -293,8 +310,35 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null)
         {
-            Toast.makeText(this, Double.toString(mLastLocation.getLatitude()) + ", "
-                    + Double.toString(mLastLocation.getLongitude()), Toast.LENGTH_LONG).show();
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+
+            Log.i("congressional", "latitude is " + Double.toString(latitude));
+            Log.i("congressional", "longitude is " + Double.toString(longitude));
+            
+            geocoder = new Geocoder(this, Locale.getDefault());
+            try
+            {
+                addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                Log.i("congressional", Integer.toString(addresses.size()));
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            String postalCode;
+            if (addresses != null)
+            {
+                postalCode = addresses.get(0).getPostalCode();
+                congressionalHeader.setText(initialHeader + "\n" + postalCode + ":");
+            }
+            else
+            {
+                Toast.makeText(this, "Could not detect location", Toast.LENGTH_LONG).show();
+            }
+
+
         } else
         {
             Toast.makeText(this, "Could not detect location", Toast.LENGTH_LONG).show();

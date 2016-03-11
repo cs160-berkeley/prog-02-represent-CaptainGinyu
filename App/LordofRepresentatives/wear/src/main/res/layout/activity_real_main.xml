@@ -37,7 +37,5 @@
         android:text="View Details on Mobile"
         android:id="@+id/toDetailedViewButton"
         android:layout_below="@+id/party"
-        android:layout_centerHorizontal="true"
-        android:enabled="true"
-        android:clickable="true" />
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
