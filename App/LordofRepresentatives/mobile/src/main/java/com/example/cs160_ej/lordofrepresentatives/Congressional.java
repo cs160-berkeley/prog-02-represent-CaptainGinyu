@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +29,11 @@ import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -65,6 +71,12 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
     public static ArrayList<RepresentativeInfo> dummyRepInfo;
 
     private String initialHeader;
+
+    protected ProgressBar progressBar;
+
+    protected String repsJson;
+
+    String zipCode;
 
     static
     {
@@ -154,7 +166,6 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-
         nextButton = (Button) findViewById(R.id.next);
         prevButton = (Button) findViewById(R.id.previous);
         nextButtonColor = ((ColorDrawable) nextButton.getBackground()).getColor();
@@ -173,10 +184,13 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             if (toAppend.equals("\nZIP code"))
             {
                 receivedZipCode = extras.getInt("zip");
-                toAppend += " " + Integer.toString(receivedZipCode);
+                zipCode = Integer.toString(receivedZipCode);
+                toAppend += " " + zipCode;
             }
             else if (extras.getBoolean("doing gps", false))
             {
+                progressBar = (ProgressBar) findViewById(R.id.progressBar);
+                progressBar.setVisibility(View.VISIBLE);
                 buildGoogleApiClient();
             }
 
@@ -222,6 +236,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             }
         });
     }
+
+
 
     protected void updateRepInfo()
     {
@@ -307,6 +323,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null)
         {
@@ -315,7 +332,9 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
 
             Log.i("congressional", "latitude is " + Double.toString(latitude));
             Log.i("congressional", "longitude is " + Double.toString(longitude));
-            
+
+
+
             geocoder = new Geocoder(this, Locale.getDefault());
             try
             {
@@ -327,11 +346,14 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 e.printStackTrace();
             }
 
-            String postalCode;
+
+            progressBar.setVisibility(View.GONE);
+
             if (addresses != null)
             {
-                postalCode = addresses.get(0).getPostalCode();
-                congressionalHeader.setText(initialHeader + "\n" + postalCode + ":");
+                zipCode = addresses.get(0).getPostalCode();
+                congressionalHeader.setText(initialHeader + "\nZIP code " + zipCode + ":");
+                new HandleApiStuff().execute();
             }
             else
             {
@@ -339,7 +361,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             }
 
 
-        } else
+        }
+        else
         {
             Toast.makeText(this, "Could not detect location", Toast.LENGTH_LONG).show();
         }
@@ -350,7 +373,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
     {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
-        Log.i("Congressional", "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+        Log.i("Congressional", "Connection failed: ConnectionResult.getErrorCode() = "
+                + result.getErrorCode());
     }
 
 
@@ -362,4 +386,58 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         Log.i("Congressional", "Connection suspended");
         mGoogleApiClient.connect();
     }
+
+    private class HandleApiStuff extends AsyncTask<Void, Void, String>
+    {
+        @Override
+        protected void onPreExecute()
+        {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(Void... urls)
+        {
+            try
+            {
+                URL url = new URL("http://congress.api.sunlightfoundation.com/legislators/locate?zip="
+                        + zipCode
+                        + "&apikey=9432749fb814425c909f15ac87ff6495");
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                try
+                {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null)
+                    {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    bufferedReader.close();
+                    return stringBuilder.toString();
+                }
+                finally
+                {
+                    urlConnection.disconnect();
+                }
+            }
+            catch(Exception e)
+            {
+                Log.e("ERROR", e.getMessage(), e);
+                return null;
+            }
+        }
+
+        protected void onPostExecute(String response)
+        {
+            if(response == null)
+            {
+                response = "{}";
+            }
+            progressBar.setVisibility(View.GONE);
+            Log.i("INFO", response);
+            repsJson = response;
+        }
+    }
 }
+
