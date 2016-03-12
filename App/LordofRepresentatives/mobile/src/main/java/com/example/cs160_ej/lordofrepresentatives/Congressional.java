@@ -28,6 +28,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.JsonArray;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,7 +80,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
 
     protected ProgressBar progressBar;
 
-    protected String repsJson;
+    protected JSONObject repsJson;
 
     String zipCode;
 
@@ -436,7 +442,17 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             }
             progressBar.setVisibility(View.GONE);
             Log.i("INFO", response);
-            repsJson = response;
+            try
+            {
+                repsJson = new JSONObject(response);
+                JSONArray results = repsJson.getJSONArray("results");
+                JSONObject aRep = (JSONObject) (results.get(0));
+                Log.i("rep website", aRep.getString("website"));
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 }

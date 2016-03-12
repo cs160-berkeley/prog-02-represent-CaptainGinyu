@@ -19,7 +19,7 @@ public class MainActivity extends Activity implements SensorEventListener
     private float y = Float.NaN;
     private float z = Float.NaN;
 
-    private final int MIN_SHAKE_SPEED = 10;
+    private final int MIN_SHAKE_SPEED = 30;
 
     public static ArrayList<RepresentativeInfo> dummyRepInfo;
     static
