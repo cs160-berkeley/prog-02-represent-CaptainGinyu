@@ -55,7 +55,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         OnConnectionFailedListener
 {
     protected String toAppend;
-    protected int receivedZipCode;
+    protected String receivedZipCode;
     protected TextView congressionalHeader;
 
     protected Button nextButton;
@@ -189,7 +189,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         nextButtonColor = ((ColorDrawable) nextButton.getBackground()).getColor();
         prevButtonColor = ((ColorDrawable) prevButton.getBackground()).getColor();
 
-        receivedZipCode = -1;
+        receivedZipCode = "-1";
 
         setUpDummyRepInfo();
         currRepIndex = 0;
@@ -201,8 +201,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             toAppend = "\n" + extras.getString("to append", "?????");
             if (toAppend.equals("\nZIP code"))
             {
-                receivedZipCode = extras.getInt("zip");
-                zipCode = Integer.toString(receivedZipCode);
+                receivedZipCode = extras.getString("zip");
+                zipCode = receivedZipCode;
                 toAppend += " " + zipCode;
                 new HandleApiStuff(getBaseContext()).execute("http://congress.api.sunlightfoundation.com/legislators/locate?zip="
                         + zipCode
@@ -294,9 +294,9 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
     public void onBackPressed()
     {
         Intent toMain = new Intent(this, MainActivity.class);
-        if (receivedZipCode != -1)
+        if (!receivedZipCode.equals("-1"))
         {
-            toMain.putExtra("received zip", (CharSequence) Integer.toString(receivedZipCode));
+            toMain.putExtra("received zip", (CharSequence) receivedZipCode);
         }
         startActivity(toMain);
         finish();
@@ -487,7 +487,6 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 }
 
                 String name;
-                Drawable repImageDrawable;
                 String party;
                 String email;
                 String website;
@@ -518,6 +517,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                     String id = currRep.getString("bioguide_id");
                     String imgUrl = "https://theunitedstates.io/images/congress/225x275/" + id + ".jpg";
                     party = currRep.getString("party");
+                    Log.i("PARTY!!!", party);
                     if (party.equals("R"))
                     {
                         party = "Republican";
@@ -525,6 +525,10 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                     else if (party.equals("D"))
                     {
                         party = "Democrat";
+                    }
+                    else if (party.equals("I"))
+                    {
+                        party = "Independent";
                     }
                     email = currRep.getString("oc_email");
                     website = currRep.getString("website");
