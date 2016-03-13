@@ -157,41 +157,41 @@ public class RepFragment extends Fragment
                         StatusesService statusesService = twitterApiClient.getStatusesService();
                         statusesService.userTimeline(null, currRep.twitter_id, 1, null, null, false,
                                 false, false, true, new Callback<List<Tweet>>()
-                        {
-                            @Override
-                            public void success(Result<List<Tweet>> result)
-                            {
-                                Log.i("tweet", result.data.get(0).text);
-                                Log.i("tweet id", Long.toString(result.data.get(0).id));
-
-                                final ViewGroup parentView
-                                        = (FrameLayout) _view.findViewById(R.id.tweetContainer);
-
-                                long tweetId = result.data.get(0).id;
-                                TweetUtils.loadTweet(tweetId, new Callback<Tweet>()
                                 {
                                     @Override
-                                    public void success(Result<Tweet> result)
+                                    public void success(Result<List<Tweet>> result)
                                     {
-                                        TweetView tweetView = new TweetView(context, result.data);
-                                        parentView.addView(tweetView);
+                                        Log.i("tweet", result.data.get(0).text);
+                                        Log.i("tweet id", Long.toString(result.data.get(0).id));
+
+                                        final ViewGroup parentView
+                                                = (FrameLayout) _view.findViewById(R.id.tweetContainer);
+
+                                        long tweetId = result.data.get(0).id;
+                                        TweetUtils.loadTweet(tweetId, new Callback<Tweet>()
+                                        {
+                                            @Override
+                                            public void success(Result<Tweet> result)
+                                            {
+                                                TweetView tweetView = new TweetView(context, result.data);
+                                                parentView.addView(tweetView);
+                                            }
+
+                                            @Override
+                                            public void failure(TwitterException exception)
+                                            {
+                                                Log.d("TwitterKit", "Load Tweet failure", exception);
+                                            }
+                                        });
+
                                     }
 
                                     @Override
-                                    public void failure(TwitterException exception)
+                                    public void failure(TwitterException e)
                                     {
-                                        Log.d("TwitterKit", "Load Tweet failure", exception);
+
                                     }
                                 });
-
-                            }
-
-                            @Override
-                            public void failure(TwitterException e)
-                            {
-
-                            }
-                        });
                     }
 
                     @Override
@@ -203,7 +203,7 @@ public class RepFragment extends Fragment
 
                 Picasso.with(context).load(currRep.repImgUrl).into(repImage);
 
-                website = args.getString(currRep.website);
+                website = currRep.website;
             }
 
 

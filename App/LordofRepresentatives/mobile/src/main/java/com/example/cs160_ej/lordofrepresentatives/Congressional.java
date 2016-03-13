@@ -476,10 +476,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                             return;
                         }
                     }
-                    //if (curr.get("types"))
                 }
-
-                //Log.i("gps results", results.toString());
             }
             catch(JSONException e)
             {
