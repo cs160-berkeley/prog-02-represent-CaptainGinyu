@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     protected Button useGPSButton;
     protected int useGPSButtonColor;
 
-    protected int currTypedZipCode;
+    protected String currTypedZipCode;
     protected TextWatcher zipInputWatcher;
 
     public static final String DUMMY_GPS_LOCATION = "Berkeley, CA";
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         leavingActivity = false;
         showingInvalidZipToast = false;
 
-        currTypedZipCode = -1;
+        currTypedZipCode = "-1";
 
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         zipCodeInputField = (EditText) findViewById(R.id.zipInput);
@@ -97,11 +97,11 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             {
                 try
                 {
-                    currTypedZipCode = Integer.parseInt(s.toString());
+                    currTypedZipCode = s.toString();
                 }
                 catch (Exception e)
                 {
-                    currTypedZipCode = -1;
+                    currTypedZipCode = "-1";
                 }
             }
 
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 zipCodeInputField.setText(zipFromBefore);
                 if (zipFromBefore != "")
                 {
-                    currTypedZipCode = Integer.parseInt(zipFromBefore.toString());
+                    currTypedZipCode = zipFromBefore.toString();
                 }
             }
         }
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                     {
                         leavingActivity = true;
                         Intent goToCongressional = new Intent(MainActivity.this, Congressional.class);
-                        goToCongressional.putExtra("zip", currTypedZipCode);
+                        goToCongressional.putExtra("zip", Integer.getInteger(currTypedZipCode));
                         goToCongressional.putExtra("to append", "ZIP code");
                         goToCongressional.putExtra("from main", true);
 
@@ -245,8 +245,8 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         moveTaskToBack(true);
     }
 
-    public boolean isValidZipCode(int testValue)
+    public boolean isValidZipCode(String testValue)
     {
-        return Integer.toString(testValue).length() == 5;
+        return testValue.length() == 5;
     }
 }

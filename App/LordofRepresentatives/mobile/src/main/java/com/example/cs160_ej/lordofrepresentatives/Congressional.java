@@ -483,6 +483,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 if (repsCount < 1)
                 {
                     Toast.makeText(context, "No reps found!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 String name;
@@ -532,7 +533,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                     String endOfTerm = currRep.getString("term_end");
 
                     WebRepresentativeInfo currRepInfo = new WebRepresentativeInfo(name,
-                            imgUrl, party, email, website, lastTweet, endOfTerm);
+                            imgUrl, party, email, website, lastTweet, endOfTerm, id, twitterId);
                     repInfo.add(currRepInfo);
                 }
 

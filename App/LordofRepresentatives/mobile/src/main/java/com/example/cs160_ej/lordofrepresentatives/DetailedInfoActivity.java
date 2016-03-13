@@ -4,13 +4,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 
 public class DetailedInfoActivity extends AppCompatActivity
@@ -27,6 +42,10 @@ public class DetailedInfoActivity extends AppCompatActivity
 
     protected HashMap<String, Drawable> partiesToLogos;
     protected HashMap<String, Integer> partiesToColors;
+
+    protected ProgressBar progressBar;
+
+    int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -53,6 +72,8 @@ public class DetailedInfoActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBarDetailed);
+
         nameText = (TextView) findViewById(R.id.repName);
         partyText = (TextView) findViewById(R.id.partyName);
         repImage = (ImageView) findViewById(R.id.repImage);
@@ -70,28 +91,221 @@ public class DetailedInfoActivity extends AppCompatActivity
 
             if (extras != null)
             {
-                int index = Integer.parseInt(extras.getString("index"));
+                index = Integer.parseInt(extras.getString("index"));
 
                 if (index > -1)
                 {
-                    RepresentativeInfo repInfo = Congressional.dummyRepInfo.get(index);
-                    DetailedInfo repDetailedInfo = repInfo.detailedInfo;
-                    nameText.setText(repInfo.name);
-                    partyText.setText(repInfo.party);
-                    repImage.setImageResource(repInfo.repImageReference);
-                    partyImage.setImageDrawable(partiesToLogos.get(repInfo.party));
-                    endOfTermText.setText(repDetailedInfo.endOfTermDate);
-                    emailText.setText(repInfo.email);
-                    committeeText.setText("Committee(s): " + repDetailedInfo.committeeName);
-                    String billsTextContent = "";
+                    WebRepresentativeInfo currRep = Congressional.repInfo.get(index);
+                    //DetailedInfo repDetailedInfo = currRep.detailedInfo;
+                    nameText.setText(currRep.name);
+                    partyText.setText(currRep.party);
+                    Picasso.with(context).load(currRep.repImgUrl).into(repImage);
+                    partyImage.setImageDrawable(partiesToLogos.get(currRep.party));
+                    endOfTermText.setText("End of Term: " + currRep.endOfTerm);
+                    emailText.setText(currRep.email);
 
-                    for (String key : repDetailedInfo.billsAndDates.keySet())
+                    Log.i("curr bio id", currRep.bio_id);
+                    new HandleApiStuff(context, "committee").execute(currRep.bio_id);
+                    new HandleApiStuff(context, "bills").execute(currRep.bio_id);
+
+
+                    //committeeText.setText("Committee(s): " + repDetailedInfo.committeeName);
+
+                    /*for (String key : repDetailedInfo.billsAndDates.keySet())
                     {
                         billsTextContent += key + ": " + repDetailedInfo.billsAndDates.get(key) + "\n";
                     }
-                    billsText.setText(billsTextContent);
+                    billsText.setText(billsTextContent);*/
                 }
             }
+        }
+    }
+
+    private class HandleApiStuff extends AsyncTask<String, Void, String>
+    {
+        Context context;
+        boolean cannotConnect = false;
+        String type;
+
+        public HandleApiStuff(Context context, String type)
+        {
+            this.context = context;
+            this.type = type;
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... bio_id)
+        {
+            if (type.equals("committee"))
+            {
+                try
+                {
+                    URL url = new URL("http://congress.api.sunlightfoundation.com/committees?member_ids="
+                            + Congressional.repInfo.get(index).bio_id
+                            + "&apikey=9432749fb814425c909f15ac87ff6495");
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    try
+                    {
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                        StringBuilder stringBuilder = new StringBuilder();
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null)
+                        {
+                            stringBuilder.append(line).append("\n");
+                        }
+                        bufferedReader.close();
+                        return stringBuilder.toString();
+                    }
+                    finally
+                    {
+                        urlConnection.disconnect();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.e("ERROR", e.getMessage(), e);
+                    cannotConnect = true;
+                    return null;
+                }
+            }
+            else
+            {
+                try
+                {
+                    URL url = new URL("http://congress.api.sunlightfoundation.com/bills?sponsor_id="
+                            + Congressional.repInfo.get(index).bio_id
+                            + "&apikey=9432749fb814425c909f15ac87ff6495");
+
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    try
+                    {
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                        StringBuilder stringBuilder = new StringBuilder();
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null)
+                        {
+                            stringBuilder.append(line).append("\n");
+                        }
+                        bufferedReader.close();
+                        return stringBuilder.toString();
+                    }
+                    finally
+                    {
+                        urlConnection.disconnect();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.e("ERROR", e.getMessage(), e);
+                    cannotConnect = true;
+                    return null;
+                }
+
+            }
+        }
+
+
+        protected void getDetailedInfo(String response)
+        {
+            if(response == null)
+            {
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+
+            if (type.equals("committee"))
+            {
+                Log.i("COMMITTEE RESPONSE", response);
+                try
+                {
+                    JSONObject repsJson = new JSONObject(response);
+                    int count = repsJson.getInt("count");
+                    if (count < 1)
+                    {
+                        return;
+                    }
+
+                    String committees = "";
+
+                    JSONArray results = repsJson.getJSONArray("results");
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        JSONObject curr = (JSONObject) (results.get(i));
+                        String currName = curr.getString("name");
+                        committees += "\n" + " - "  + currName;
+                        Log.i("committee", currName);
+                    }
+
+                    if (committees.equals(""))
+                    {
+                        committees = "None";
+                    }
+
+                    committeeText.setText("Committee(s): " + committees);
+
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                Log.i("BILLS RESPONSE", response);
+                try
+                {
+                    JSONObject repsJson = new JSONObject(response);
+
+                    String bills = "";
+
+                    JSONArray results = repsJson.getJSONArray("results");
+
+                    for (int i = 0; i < results.length(); i++)
+                    {
+                        JSONObject curr = (JSONObject) (results.get(i));
+                        String currName = curr.getString("short_title");
+                        if (currName.equals("null"))
+                        {
+                            currName = curr.getString("official_title");
+                        }
+                        bills += "\n" + " - "  + currName;
+                        Log.i("curr name", currName);
+                    }
+
+                    if (bills.equals(""))
+                    {
+                        bills = "None";
+                    }
+
+                    billsText.setText(bills);
+
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        protected void onPostExecute(String response)
+        {
+            if (cannotConnect)
+            {
+                Toast.makeText(context, "Cannot connect to Congress Database", Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+
+            getDetailedInfo(response);
+
+            progressBar.setVisibility(View.GONE);
         }
     }
 }
