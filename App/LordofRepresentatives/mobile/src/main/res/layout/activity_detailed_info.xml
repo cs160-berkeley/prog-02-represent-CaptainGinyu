@@ -110,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="End of Term: Unknown"
+                android:text="Unknown End of Term"
                 android:id="@+id/endOfTerm"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/repEmail"
@@ -124,10 +124,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Commitee(s): Unknown"
+                android:text="Unknown Committees"
                 android:id="@+id/committee"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/endOfTerm"
+                android:layout_below="@+id/commiteeTitle"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginBottom="16dp"
@@ -145,7 +145,8 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 android:textColor="#444444"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                android:textStyle="bold"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -158,6 +159,16 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginBottom="16dp"
                 android:textColor="#444444" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Committee(s):"
+                android:id="@+id/commiteeTitle"
+                android:textStyle="bold"
+                android:textColor="#444444"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/endOfTerm"/>
 
 
         </RelativeLayout>

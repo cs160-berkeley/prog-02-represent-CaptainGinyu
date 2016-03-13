@@ -3,12 +3,8 @@ package com.example.cs160_ej.lordofrepresentatives;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -16,7 +12,6 @@ import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -43,9 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -83,8 +76,6 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
     protected Geocoder geocoder;
     protected List<Address> addresses;
 
-    public static ArrayList<RepresentativeInfo> dummyRepInfo;
-
     public static ArrayList<WebRepresentativeInfo> repInfo;
 
     private String initialHeader;
@@ -95,61 +86,18 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
 
     protected String zipCode;
 
-    private boolean gpsLocationAquisitionFailed;
-
     protected ScrollView scrollView;
     protected RelativeLayout extraFloating;
 
-    static
-    {
-        setUpDummyRepInfo();
-    }
-
-    public static void setUpDummyRepInfo()
-    {
-        dummyRepInfo = new ArrayList<RepresentativeInfo>();
-        RepresentativeInfo rep1 = new RepresentativeInfo(
-                "Ian McDiarmid",
-                R.drawable.palpatine,
-                "Republican",
-                "willBeEmperor@hotmail.com",
-                "emperorpalpatine.com",
-                "Power!!! Unlimited... POWER!!!",
-                new DetailedInfo("May 4, 2066", "The Empire"));
-        rep1.detailedInfo.billsAndDates.put("2005", "Order 66");
-        rep1.detailedInfo.billsAndDates.put("2006", "Death Star Law");
-        rep1.detailedInfo.billsAndDates.put("2010", "Anti-Jedi Law");
-        RepresentativeInfo rep2 = new RepresentativeInfo(
-                "Eric Paulos",
-                R.drawable.paulos,
-                "Democrat",
-                "paulos@paulos.gov",
-                "yourdesignisbad.com",
-                "I bet that your app is full of bad design.",
-                new DetailedInfo("December 31, 2345", "HCI Committee"));
-        rep2.detailedInfo.billsAndDates.put("2004", "Anti-Bad-Design Bill");
-        rep2.detailedInfo.billsAndDates.put("2005", "Anti-Bad-Design Bill Beta");
-        rep2.detailedInfo.billsAndDates.put("2017", "The Good Design Initiative");
-        RepresentativeInfo rep3 = new RepresentativeInfo(
-                "Donald Duck",
-                R.drawable.donald_duck,
-                "Independent",
-                "makedisneygreatagain@makedisneygreatagain.com",
-                "makedisneygreatagain.com",
-                "Quack",
-                new DetailedInfo("January 22, 3000", "The Grand Duck Legion"));
-        rep3.detailedInfo.billsAndDates.put("2052", "Anti-Daffy-Duck Bill");
-        rep3.detailedInfo.billsAndDates.put("2055", "Ultimate Quack Bill");
-        dummyRepInfo.add(rep1);
-        dummyRepInfo.add(rep2);
-        dummyRepInfo.add(rep3);
-    }
+    private boolean doingGps = false;
+    protected String countyName;
 
     /**
      * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
      */
     protected synchronized void buildGoogleApiClient()
     {
+        doingGps = true;
         progressBar.setVisibility(View.VISIBLE);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -208,10 +156,6 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         prevButtonColor = ((ColorDrawable) prevButton.getBackground()).getColor();
 
         receivedZipCode = "-1";
-
-        gpsLocationAquisitionFailed = false;
-
-        setUpDummyRepInfo();
         currRepIndex = 0;
 
         Intent receivedIntent = getIntent();
@@ -231,6 +175,9 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             else if (extras.getBoolean("doing gps", false))
             {
                 buildGoogleApiClient();
+                new HandleApiStuff(getBaseContext()).execute("http://congress.api.sunlightfoundation.com/legislators/locate?" +
+                        "latitude=" + latitude + "&longitude=" + longitude
+                        + "&apikey=9432749fb814425c909f15ac87ff6495");
             }
 
             toAppend += ":";
@@ -292,7 +239,6 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         WebRepresentativeInfo webRepresentativeInfo = repInfo.get(currRepIndex);
 
         argsForFragment.putString("name", webRepresentativeInfo.name);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         argsForFragment.putString("party", webRepresentativeInfo.party);
         argsForFragment.putString("email", webRepresentativeInfo.email);
         argsForFragment.putString("website", webRepresentativeInfo.website);
@@ -360,13 +306,6 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED)
         {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
 
@@ -395,17 +334,25 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
 
             if (addresses != null)
             {
-                zipCode = addresses.get(0).getPostalCode();
-                congressionalHeader.setText(initialHeader + "\nZIP code " + zipCode + ":");
-                new HandleApiStuff(getBaseContext()).execute("http://congress.api.sunlightfoundation.com/legislators/locate?zip="
-                        + zipCode
-                        + "&apikey=9432749fb814425c909f15ac87ff6495");
+                if (!doingGps)
+                {
+                    zipCode = addresses.get(0).getPostalCode();
+                    congressionalHeader.setText(initialHeader + "\nZIP code " + zipCode + ":");
+                    new HandleApiStuff(getBaseContext()).execute("http://congress.api.sunlightfoundation.com/legislators/locate?zip="
+                            + zipCode
+                            + "&apikey=9432749fb814425c909f15ac87ff6495");
+                }
+                else
+                {
+                    //countyName = addresses.get(0).getExtras().get("results");
+                    new CountyGetter(getBaseContext()).execute();
+                }
             }
             else
             {
-                Toast.makeText(this, "Could not detect location", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Could not get location", Toast.LENGTH_LONG).show();
                 TextView noneText = (TextView) findViewById(R.id.noneText);
-                noneText.setText("Could not detect location!");
+                noneText.setText("Could not get location!");
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -413,9 +360,9 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         }
         else
         {
-            Toast.makeText(this, "Could not detect location", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Could not get location", Toast.LENGTH_LONG).show();
             TextView noneText = (TextView) findViewById(R.id.noneText);
-            noneText.setText("Could not detect location!");
+            noneText.setText("Could not get location!");
             progressBar.setVisibility(View.GONE);
         }
     }
@@ -437,6 +384,102 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         // attempt to re-establish the connection.
         Log.i("Congressional", "Connection suspended");
         mGoogleApiClient.connect();
+    }
+
+    private class CountyGetter extends AsyncTask<Void, Void, String>
+    {
+
+        boolean cannotGetCounty;
+        Context context;
+
+        public CountyGetter(Context context)
+        {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            progressBar.setVisibility(View.VISIBLE);
+            cannotGetCounty = false;
+        }
+
+        @Override
+        protected String doInBackground(Void... params)
+        {
+            try
+            {
+                URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?&latlng=" +
+                        latitude + "," + longitude);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                try
+                {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null)
+                    {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    bufferedReader.close();
+                    return stringBuilder.toString();
+                }
+                finally
+                {
+                    urlConnection.disconnect();
+                }
+            }
+            catch(Exception e)
+            {
+                Log.e("ERROR", e.getMessage(), e);
+                cannotGetCounty = true;
+                return null;
+            }
+        }
+
+        protected void onPostExecute(String response)
+        {
+            if (cannotGetCounty || response == null)
+            {
+                Toast.makeText(context, "Could not get location", Toast.LENGTH_LONG).show();
+                TextView noneText = (TextView) findViewById(R.id.noneText);
+                noneText.setText("Could not get location!");
+                progressBar.setVisibility(View.GONE);
+            }
+            Log.i("GPS RESPONSE", response);
+
+            try
+            {
+                JSONObject location = new JSONObject(response);
+                JSONArray results = location.getJSONArray("results");
+
+                for (int i = 0; i < results.length(); i++)
+                {
+                    JSONObject curr = (JSONObject) results.get(i);
+                    JSONArray typesArray = (JSONArray) curr.get("types");
+                    for (int j = 0; j < typesArray.length(); j++)
+                    {
+                        Log.i("blah", typesArray.get(j).toString());
+                        Log.i("blah2", Boolean.toString(typesArray.get(j).toString().equals("administrative_area_level_2")));
+                        if (typesArray.get(j).toString().equals("administrative_area_level_2"))
+                        {
+                            Log.i("here", "here");
+                            countyName = curr.getString("long_name");
+                            Log.i("county name", countyName);
+                            congressionalHeader.setText(initialHeader + "\n" + countyName + ":");
+                            return;
+                        }
+                    }
+                    //if (curr.get("types"))
+                }
+
+                //Log.i("gps results", results.toString());
+            }
+            catch(JSONException e)
+            {
+                Log.i("Exception!", "Exception!");
+            }
+        }
     }
 
     private class HandleApiStuff extends AsyncTask<String, Void, String>
@@ -497,7 +540,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 Toast.makeText(context, "No reps found!", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 TextView noneText = (TextView) findViewById(R.id.noneText);
-                noneText.setText("Nothing found at ZIP code of " + zipCode);
+                noneText.setText("Nothing found at " + zipCode);
                 return;
             }
 
@@ -510,7 +553,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 {
                     Toast.makeText(context, "No reps found!", Toast.LENGTH_SHORT).show();
                     TextView noneText = (TextView) findViewById(R.id.noneText);
-                    noneText.setText("Nothing found at ZIP code of " + zipCode);
+                    noneText.setText("Nothing found at " + zipCode);
                     return;
                 }
 
@@ -561,7 +604,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                     email = currRep.getString("oc_email");
                     website = currRep.getString("website");
                     String twitterId = currRep.getString("twitter_id");
-                    lastTweet = "TODO";
+                    lastTweet = "";
                     String endOfTerm = currRep.getString("term_end");
 
                     WebRepresentativeInfo currRepInfo = new WebRepresentativeInfo(name,

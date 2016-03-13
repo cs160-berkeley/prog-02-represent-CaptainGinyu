@@ -2,10 +2,7 @@ package com.example.cs160_ej.lordofrepresentatives;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -19,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +34,6 @@ import com.twitter.sdk.android.tweetui.TweetView;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
@@ -96,8 +90,8 @@ public class RepFragment extends Fragment
         partiesToLogos.put("Independent", ContextCompat.getDrawable(context, R.drawable.unknown));
 
         partiesToColors = new HashMap<String, Integer>();
-        partiesToColors.put("Republican", Color.rgb(255, 125, 125));
-        partiesToColors.put("Democrat", Color.rgb(125, 150, 255));
+        partiesToColors.put("Republican", Color.rgb(237, 165, 164));
+        partiesToColors.put("Democrat", Color.rgb(164, 204, 237));
         partiesToColors.put("Unknown Party", Color.rgb(255, 245, 118));
         partiesToColors.put("Independent", Color.rgb(255, 245, 118));
 
@@ -122,9 +116,6 @@ public class RepFragment extends Fragment
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(context, new Twitter(authConfig));
 
-        String receivedNameString = nameText.getText().toString();
-        String receivedPartyString = partyText.getText().toString();
-
         Bundle args = getArguments();
         if (args != null)
         {
@@ -134,7 +125,7 @@ public class RepFragment extends Fragment
                 final WebRepresentativeInfo currRep = Congressional.repInfo.get(Integer.parseInt(index));
                 nameText.setText(currRep.name);
 
-                receivedPartyString = currRep.party;
+                String receivedPartyString = currRep.party;
                 partyText.setText(receivedPartyString);
                 if (partiesToLogos.get(receivedPartyString) == null)
                 {

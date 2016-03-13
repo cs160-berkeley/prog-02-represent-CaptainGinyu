@@ -9,6 +9,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -239,7 +241,7 @@ public class DetailedInfoActivity extends AppCompatActivity
                     {
                         JSONObject curr = (JSONObject) (results.get(i));
                         String currName = curr.getString("name");
-                        committees += "\n" + " - "  + currName;
+                        committees += "\n" + " • "  + currName + "\n";
                         Log.i("committee", currName);
                     }
 
@@ -248,7 +250,7 @@ public class DetailedInfoActivity extends AppCompatActivity
                         committees = "None";
                     }
 
-                    committeeText.setText("Committee(s): " + committees);
+                    committeeText.setText(committees);
 
                 }
                 catch (JSONException e)
@@ -275,7 +277,7 @@ public class DetailedInfoActivity extends AppCompatActivity
                         {
                             currName = curr.getString("official_title");
                         }
-                        bills += "\n" + " - "  + currName;
+                        bills += "<br>" + " • " + curr.getString("introduced_on") + ": <i>" + currName + "</i><br>";
                         Log.i("curr name", currName);
                     }
 
@@ -284,7 +286,7 @@ public class DetailedInfoActivity extends AppCompatActivity
                         bills = "None";
                     }
 
-                    billsText.setText(bills);
+                    billsText.setText(Html.fromHtml(bills));
 
                 }
                 catch (JSONException e)
