@@ -15,7 +15,8 @@
         android:theme="@android:style/Theme.DeviceDefault">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,11 +32,14 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".RealMain" />
+        <activity
+            android:name=".RealMain"
+            android:launchMode="singleInstance"/>
 
         <service android:name=".WearToMobileService" />
 
-        <activity android:name=".VoteViewActivity"></activity>
+        <activity
+            android:name=".VoteViewActivity"></activity>
     </application>
 
 </manifest>

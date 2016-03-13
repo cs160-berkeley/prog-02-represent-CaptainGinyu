@@ -19,27 +19,44 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.AppSession;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterApiClient;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.services.StatusesService;
+import com.twitter.sdk.android.tweetui.TweetUtils;
+import com.twitter.sdk.android.tweetui.TweetView;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 public class RepFragment extends Fragment
 {
+    private static final String TWITTER_KEY = "8CI1AiQ5zD8JyGFioPnmTptqy";
+    private static final String TWITTER_SECRET = "P5BLEQQz6krrSQXaLtdzhLHoJMhs5t25fUd3ML45hbyJ4f7Geo";
+
     protected TextView nameText;
     protected TextView partyText;
     protected TextView emailText;
-    protected TextView tweetText;
 
     protected Button visitWebsiteButton;
-    protected Button viewLastTweetButton;
     protected Button viewMoreInfoButton;
     protected int visitWebsiteButtonColor;
-    protected int viewLastTweetButtonColor;
     protected int viewMoreInfoButtonColor;
 
     protected ImageView repImage;
@@ -67,11 +84,11 @@ public class RepFragment extends Fragment
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
+    public void onViewCreated(final View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
 
-        Context context = getContext();
+        final Context context = getContext();
         partiesToLogos = new HashMap<String, Drawable>();
         partiesToLogos.put("Republican", ContextCompat.getDrawable(context, R.drawable.republican));
         partiesToLogos.put("Democrat", ContextCompat.getDrawable(context, R.drawable.democrat));
@@ -88,15 +105,12 @@ public class RepFragment extends Fragment
         nameText = (TextView) view.findViewById(R.id.repName);
         partyText = (TextView) view.findViewById(R.id.partyName);
         emailText = (TextView) view.findViewById(R.id.repEmail);
-        tweetText = (TextView) view.findViewById(R.id.tweet);
 
         root = (FrameLayout) view.findViewById(R.id.root);
 
         visitWebsiteButton = (Button) view.findViewById(R.id.visitWebsiteButton);
-        viewLastTweetButton = (Button) view.findViewById(R.id.viewLastTweetButton);
         viewMoreInfoButton = (Button) view.findViewById(R.id.viewMoreInfoButton);
         visitWebsiteButtonColor = ((ColorDrawable) visitWebsiteButton.getBackground()).getColor();
-        viewLastTweetButtonColor = ((ColorDrawable) viewLastTweetButton.getBackground()).getColor();
         viewMoreInfoButtonColor = ((ColorDrawable) viewMoreInfoButton.getBackground()).getColor();
 
         goingToWebsite = false;
@@ -104,6 +118,9 @@ public class RepFragment extends Fragment
 
         repImage = (ImageView) view.findViewById(R.id.repImage);
         partyImage = (ImageView) view.findViewById(R.id.partyImage);
+
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(context, new Twitter(authConfig));
 
         String receivedNameString = nameText.getText().toString();
         String receivedPartyString = partyText.getText().toString();
@@ -114,7 +131,7 @@ public class RepFragment extends Fragment
             index = args.getString("index", "-1");
             if (Integer.parseInt(index) >= 0)
             {
-                WebRepresentativeInfo currRep = Congressional.repInfo.get(Integer.parseInt(index));
+                final WebRepresentativeInfo currRep = Congressional.repInfo.get(Integer.parseInt(index));
                 nameText.setText(currRep.name);
 
                 receivedPartyString = currRep.party;
@@ -137,7 +154,61 @@ public class RepFragment extends Fragment
                 }
 
                 emailText.setText(currRep.email);
-                tweetText.setText("None");
+
+                TwitterCore.getInstance().logInGuest(new Callback<AppSession>()
+                {
+                    final View _view = view;
+
+                    @Override
+                    public void success(Result<AppSession> result)
+                    {
+                        TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
+                        StatusesService statusesService = twitterApiClient.getStatusesService();
+                        statusesService.userTimeline(null, currRep.twitter_id, 1, null, null, false,
+                                false, false, true, new Callback<List<Tweet>>()
+                        {
+                            @Override
+                            public void success(Result<List<Tweet>> result)
+                            {
+                                Log.i("tweet", result.data.get(0).text);
+                                Log.i("tweet id", Long.toString(result.data.get(0).id));
+
+                                final ViewGroup parentView
+                                        = (FrameLayout) _view.findViewById(R.id.tweetContainer);
+
+                                long tweetId = result.data.get(0).id;
+                                TweetUtils.loadTweet(tweetId, new Callback<Tweet>()
+                                {
+                                    @Override
+                                    public void success(Result<Tweet> result)
+                                    {
+                                        TweetView tweetView = new TweetView(context, result.data);
+                                        parentView.addView(tweetView);
+                                    }
+
+                                    @Override
+                                    public void failure(TwitterException exception)
+                                    {
+                                        Log.d("TwitterKit", "Load Tweet failure", exception);
+                                    }
+                                });
+
+                            }
+
+                            @Override
+                            public void failure(TwitterException e)
+                            {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failure(TwitterException e)
+                    {
+
+                    }
+                });
 
                 Picasso.with(context).load(currRep.repImgUrl).into(repImage);
 
@@ -179,16 +250,6 @@ public class RepFragment extends Fragment
                     thread.start();
                 }
 
-                return true;
-            }
-        });
-        viewLastTweetButton.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                changeButtonColor(v, event, viewLastTweetButtonColor);
-                tweetText.setVisibility(View.VISIBLE);
                 return true;
             }
         });

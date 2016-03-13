@@ -26,6 +26,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +95,11 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
 
     protected String zipCode;
 
+    private boolean gpsLocationAquisitionFailed;
+
+    protected ScrollView scrollView;
+    protected RelativeLayout extraFloating;
+
     static
     {
         setUpDummyRepInfo();
@@ -143,6 +150,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
      */
     protected synchronized void buildGoogleApiClient()
     {
+        progressBar.setVisibility(View.VISIBLE);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -156,6 +164,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         super.onStart();
         if (mGoogleApiClient != null)
         {
+            progressBar.setVisibility(View.VISIBLE);
             mGoogleApiClient.connect();
         }
     }
@@ -179,9 +188,18 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         setSupportActionBar(actionBar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("Reps Viewer");
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.bringToFront();
+
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
+        extraFloating = (RelativeLayout) findViewById(R.id.extraFloating);
+        scrollView.setVisibility(View.GONE);
+        extraFloating.setVisibility(View.GONE);
+
+
         repInfo = new ArrayList<WebRepresentativeInfo>();
 
         nextButton = (Button) findViewById(R.id.next);
@@ -190,6 +208,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         prevButtonColor = ((ColorDrawable) prevButton.getBackground()).getColor();
 
         receivedZipCode = "-1";
+
+        gpsLocationAquisitionFailed = false;
 
         setUpDummyRepInfo();
         currRepIndex = 0;
@@ -269,13 +289,10 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
     {
         RepFragment currRepFragment = new RepFragment();
         Bundle argsForFragment = new Bundle();
-        //RepresentativeInfo representativeInfo = dummyRepInfo.get(currRepIndex);
         WebRepresentativeInfo webRepresentativeInfo = repInfo.get(currRepIndex);
 
         argsForFragment.putString("name", webRepresentativeInfo.name);
-        //Bitmap bitmap = BitmapFactory.decodeByteArray()
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        //argsForFragment.put
         argsForFragment.putString("party", webRepresentativeInfo.party);
         argsForFragment.putString("email", webRepresentativeInfo.email);
         argsForFragment.putString("website", webRepresentativeInfo.website);
@@ -353,6 +370,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             return;
         }
 
+        progressBar.setVisibility(View.VISIBLE);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null)
         {
@@ -386,6 +404,9 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             else
             {
                 Toast.makeText(this, "Could not detect location", Toast.LENGTH_LONG).show();
+                TextView noneText = (TextView) findViewById(R.id.noneText);
+                noneText.setText("Could not detect location!");
+                progressBar.setVisibility(View.GONE);
             }
 
 
@@ -393,6 +414,9 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         else
         {
             Toast.makeText(this, "Could not detect location", Toast.LENGTH_LONG).show();
+            TextView noneText = (TextView) findViewById(R.id.noneText);
+            noneText.setText("Could not detect location!");
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -472,6 +496,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             {
                 Toast.makeText(context, "No reps found!", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
+                TextView noneText = (TextView) findViewById(R.id.noneText);
+                noneText.setText("Nothing found at ZIP code of " + zipCode);
                 return;
             }
 
@@ -483,6 +509,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 if (repsCount < 1)
                 {
                     Toast.makeText(context, "No reps found!", Toast.LENGTH_SHORT).show();
+                    TextView noneText = (TextView) findViewById(R.id.noneText);
+                    noneText.setText("Nothing found at ZIP code of " + zipCode);
                     return;
                 }
 
@@ -554,6 +582,10 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             {
                 Toast.makeText(context, "Cannot connect to Congress Database", Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
+                TextView noneText = (TextView) findViewById(R.id.noneText);
+                scrollView.setVisibility(View.VISIBLE);
+                
+                noneText.setText("Cannot connect to Congress Database");
                 return;
             }
 
@@ -561,6 +593,8 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             if (repsCount > 0)
             {
                 updateRepInfo();
+                scrollView.setVisibility(View.VISIBLE);
+                extraFloating.setVisibility(View.VISIBLE);
             }
 
             progressBar.setVisibility(View.GONE);

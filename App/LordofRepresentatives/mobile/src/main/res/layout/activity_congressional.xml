@@ -8,7 +8,28 @@
     android:background="#d6d4d4"
     android:focusableInTouchMode="true"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/noneText"
+        android:layout_margin="16dp"
+        android:textColor="#444444"
+        android:layout_centerInParent="true"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:visibility="visible"
+        />
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
@@ -23,7 +44,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -32,7 +54,8 @@
         android:layout_below="@+id/actionBar"
         android:clickable="true"
         android:focusable="true"
-        android:focusableInTouchMode="true" >
+        android:focusableInTouchMode="true"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -67,7 +90,9 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:id="@+id/extraFloating"
+        >
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -79,7 +104,7 @@
             android:layout_alignParentBottom="true"
             android:elevation="4dp"
             android:singleLine="false"
-            android:background="#64ff0000"
+            android:background="#64000000"
             android:layout_alignParentTop="false"
             android:layout_alignParentRight="false" />
 
@@ -92,18 +117,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:elevation="4dp"
-            android:background="#64ff0000" />
+            android:background="#64000000" />
 
     </RelativeLayout>
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:indeterminate="true"
-        android:visibility="visible"/>
 
 </RelativeLayout>

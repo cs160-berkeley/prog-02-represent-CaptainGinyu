@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/relativeLayout">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -33,9 +34,9 @@
             android:textColor="#222222"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/repImage"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -100,31 +101,12 @@
             android:layout_marginBottom="16dp"
             android:padding="5dp" />
 
-        <Button
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="View Last Tweet"
-            android:id="@+id/viewLastTweetButton"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/visitWebsiteButton"
-            android:background="#0084ff"
-            android:padding="5dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No tweet found"
-            android:id="@+id/tweet"
-            android:layout_below="@+id/viewLastTweetButton"
-            android:layout_centerHorizontal="true"
-            android:textColor="#444444"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
-            android:visibility="gone" />
+            android:layout_below="@+id/viewMoreInfoButton"
+            android:id="@+id/tweetContainer">
+        </FrameLayout>
 
         <Button
             android:layout_width="wrap_content"
@@ -135,9 +117,9 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:layout_below="@+id/tweet"
             android:layout_centerHorizontal="true"
-            android:background="#0084ff" />
+            android:background="#0084ff"
+            android:layout_below="@+id/visitWebsiteButton"/>
     </RelativeLayout>
 
 </FrameLayout>

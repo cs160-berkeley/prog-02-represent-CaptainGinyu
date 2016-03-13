@@ -29,7 +29,8 @@
         <activity
             android:name=".DetailedInfoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleInstance"/>
 
         <service
             android:name=".MobileListener"
