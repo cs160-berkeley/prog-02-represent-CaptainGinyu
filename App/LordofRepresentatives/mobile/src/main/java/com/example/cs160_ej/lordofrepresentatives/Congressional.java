@@ -175,9 +175,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             else if (extras.getBoolean("doing gps", false))
             {
                 buildGoogleApiClient();
-                new HandleApiStuff(getBaseContext()).execute("http://congress.api.sunlightfoundation.com/legislators/locate?" +
-                        "latitude=" + latitude + "&longitude=" + longitude
-                        + "&apikey=9432749fb814425c909f15ac87ff6495");
+
             }
 
             toAppend += ":";
@@ -344,8 +342,10 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 }
                 else
                 {
-                    //countyName = addresses.get(0).getExtras().get("results");
                     new CountyGetter(getBaseContext()).execute();
+                    new HandleApiStuff(getBaseContext()).execute("http://congress.api.sunlightfoundation.com/legislators/locate?" +
+                            "latitude=" + latitude + "&longitude=" + longitude
+                            + "&apikey=9432749fb814425c909f15ac87ff6495");
                 }
             }
             else
@@ -456,15 +456,21 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 for (int i = 0; i < results.length(); i++)
                 {
                     JSONObject curr = (JSONObject) results.get(i);
-                    JSONArray typesArray = (JSONArray) curr.get("types");
+                    Log.i("curr", curr.toString());
+                    JSONArray addressComponents = (JSONArray) curr.get("address_components");
+                    JSONObject firstResult = (JSONObject) ((JSONArray) addressComponents).get(0);
+                    JSONArray typesArray = firstResult.getJSONArray("types");
                     for (int j = 0; j < typesArray.length(); j++)
                     {
+
                         Log.i("blah", typesArray.get(j).toString());
                         Log.i("blah2", Boolean.toString(typesArray.get(j).toString().equals("administrative_area_level_2")));
                         if (typesArray.get(j).toString().equals("administrative_area_level_2"))
                         {
                             Log.i("here", "here");
-                            countyName = curr.getString("long_name");
+
+                            Log.i("address components", addressComponents.toString());
+                            countyName = firstResult.getString("long_name");
                             Log.i("county name", countyName);
                             congressionalHeader.setText(initialHeader + "\n" + countyName + ":");
                             return;
@@ -506,6 +512,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             try
             {
                 URL url = new URL(urls[0]);
+                Log.i("received url", urls[0]);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 try
                 {
