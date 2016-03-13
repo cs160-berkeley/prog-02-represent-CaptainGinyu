@@ -104,6 +104,6 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:indeterminate="true"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
 </RelativeLayout>

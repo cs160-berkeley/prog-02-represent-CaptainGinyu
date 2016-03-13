@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 23
@@ -6,6 +16,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.cs160_ej.lordofrepresentatives"
+        multiDexEnabled true
         minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
@@ -21,6 +32,7 @@ android {
 
 repositories {
     mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
@@ -34,4 +46,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.google.maps:google-maps-services:0.1.7'
+    compile('com.twitter.sdk.android:twitter:1.13.0@aar') {
+        transitive = true;
+    }
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

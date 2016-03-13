@@ -82,7 +82,7 @@ public class DetailedInfoActivity extends AppCompatActivity
                     partyImage.setImageDrawable(partiesToLogos.get(repInfo.party));
                     endOfTermText.setText(repDetailedInfo.endOfTermDate);
                     emailText.setText(repInfo.email);
-                    committeeText.setText("Committee: " + repDetailedInfo.committeeName);
+                    committeeText.setText("Committee(s): " + repDetailedInfo.committeeName);
                     String billsTextContent = "";
 
                     for (String key : repDetailedInfo.billsAndDates.keySet())

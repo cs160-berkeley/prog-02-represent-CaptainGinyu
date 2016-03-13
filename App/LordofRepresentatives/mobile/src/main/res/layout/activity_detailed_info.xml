@@ -124,7 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Name Of Committee: Unknown"
+                android:text="Commitee(s): Unknown"
                 android:id="@+id/committee"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/endOfTerm"

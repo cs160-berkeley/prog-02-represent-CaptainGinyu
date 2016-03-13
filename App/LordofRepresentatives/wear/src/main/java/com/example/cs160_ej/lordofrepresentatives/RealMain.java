@@ -74,7 +74,14 @@ public class RealMain extends Activity implements SensorEventListener
             nameText.setText(name);
             party = extras.getString("party", partyText.getText().toString());
             partyText.setText(party);
-            root.setBackgroundColor(partiesToColors.get(party));
+            if (partiesToColors.get(party) == null)
+            {
+                root.setBackgroundColor(partiesToColors.get("Independent"));
+            }
+            else
+            {
+                root.setBackgroundColor(partiesToColors.get(party));
+            }
             index = extras.getString("index", "-1");
             Log.i("real main intent", name);
             Log.i("real main intent", party);

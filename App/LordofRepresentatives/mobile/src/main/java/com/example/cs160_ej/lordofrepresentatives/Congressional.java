@@ -1,9 +1,14 @@
 package com.example.cs160_ej.lordofrepresentatives;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -11,6 +16,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +34,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
-import com.google.gson.JsonArray;
 
 
 import org.json.JSONArray;
@@ -36,7 +41,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -76,13 +83,15 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
 
     public static ArrayList<RepresentativeInfo> dummyRepInfo;
 
+    public static ArrayList<WebRepresentativeInfo> repInfo;
+
     private String initialHeader;
 
     protected ProgressBar progressBar;
 
     protected JSONObject repsJson;
 
-    String zipCode;
+    protected String zipCode;
 
     static
     {
@@ -172,6 +181,9 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        repInfo = new ArrayList<WebRepresentativeInfo>();
+
         nextButton = (Button) findViewById(R.id.next);
         prevButton = (Button) findViewById(R.id.previous);
         nextButtonColor = ((ColorDrawable) nextButton.getBackground()).getColor();
@@ -192,18 +204,17 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 receivedZipCode = extras.getInt("zip");
                 zipCode = Integer.toString(receivedZipCode);
                 toAppend += " " + zipCode;
+                new HandleApiStuff(getBaseContext()).execute("http://congress.api.sunlightfoundation.com/legislators/locate?zip="
+                        + zipCode
+                        + "&apikey=9432749fb814425c909f15ac87ff6495");
             }
             else if (extras.getBoolean("doing gps", false))
             {
-                progressBar = (ProgressBar) findViewById(R.id.progressBar);
-                progressBar.setVisibility(View.VISIBLE);
                 buildGoogleApiClient();
             }
 
             toAppend += ":";
         }
-
-        updateRepInfo();
 
         congressionalHeader = (TextView) findViewById(R.id.congressionalHeader);
         initialHeader = congressionalHeader.getText().toString();
@@ -218,8 +229,12 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
 
                 if (event.getAction() == MotionEvent.ACTION_UP)
                 {
-                    currRepIndex = (currRepIndex + 1) % dummyRepInfo.size();
-                    updateRepInfo();
+
+                    if (repInfo.size() > 0)
+                    {
+                        currRepIndex = (currRepIndex + 1) % repInfo.size();
+                        updateRepInfo();
+                    }
                 }
 
                 return true;
@@ -230,12 +245,17 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             public boolean onTouch(View v, MotionEvent event) {
                 changeButtonColor(v, event, prevButtonColor);
 
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    currRepIndex--;
-                    if (currRepIndex < 0) {
-                        currRepIndex = dummyRepInfo.size() - 1;
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                {
+                    if (repInfo.size() > 0)
+                    {
+                        currRepIndex--;
+                        if (currRepIndex < 0)
+                        {
+                            currRepIndex = repInfo.size() - 1;
+                        }
+                        updateRepInfo();
                     }
-                    updateRepInfo();
                 }
 
                 return true;
@@ -249,14 +269,17 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
     {
         RepFragment currRepFragment = new RepFragment();
         Bundle argsForFragment = new Bundle();
-        RepresentativeInfo representativeInfo = dummyRepInfo.get(currRepIndex);
+        //RepresentativeInfo representativeInfo = dummyRepInfo.get(currRepIndex);
+        WebRepresentativeInfo webRepresentativeInfo = repInfo.get(currRepIndex);
 
-        argsForFragment.putString("name", representativeInfo.name);
-        argsForFragment.putInt("repImageReference", representativeInfo.repImageReference);
-        argsForFragment.putString("party", representativeInfo.party);
-        argsForFragment.putString("email", representativeInfo.email);
-        argsForFragment.putString("website", representativeInfo.website);
-        argsForFragment.putString("lastTweet", representativeInfo.lastTweet);
+        argsForFragment.putString("name", webRepresentativeInfo.name);
+        //Bitmap bitmap = BitmapFactory.decodeByteArray()
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        //argsForFragment.put
+        argsForFragment.putString("party", webRepresentativeInfo.party);
+        argsForFragment.putString("email", webRepresentativeInfo.email);
+        argsForFragment.putString("website", webRepresentativeInfo.website);
+        argsForFragment.putString("lastTweet", webRepresentativeInfo.lastTweet);
         argsForFragment.putString("index", Integer.toString(currRepIndex));
 
         currRepFragment.setArguments(argsForFragment);
@@ -352,14 +375,13 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
                 e.printStackTrace();
             }
 
-
-            progressBar.setVisibility(View.GONE);
-
             if (addresses != null)
             {
                 zipCode = addresses.get(0).getPostalCode();
                 congressionalHeader.setText(initialHeader + "\nZIP code " + zipCode + ":");
-                new HandleApiStuff().execute();
+                new HandleApiStuff(getBaseContext()).execute("http://congress.api.sunlightfoundation.com/legislators/locate?zip="
+                        + zipCode
+                        + "&apikey=9432749fb814425c909f15ac87ff6495");
             }
             else
             {
@@ -393,8 +415,18 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         mGoogleApiClient.connect();
     }
 
-    private class HandleApiStuff extends AsyncTask<Void, Void, String>
+    private class HandleApiStuff extends AsyncTask<String, Void, String>
     {
+        Context context;
+        boolean cannotConnect = false;
+        int repsCount;
+
+        public HandleApiStuff(Context context)
+        {
+            this.context = context;
+            repsCount = 0;
+        }
+
         @Override
         protected void onPreExecute()
         {
@@ -402,13 +434,11 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         }
 
         @Override
-        protected String doInBackground(Void... urls)
+        protected String doInBackground(String... urls)
         {
             try
             {
-                URL url = new URL("http://congress.api.sunlightfoundation.com/legislators/locate?zip="
-                        + zipCode
-                        + "&apikey=9432749fb814425c909f15ac87ff6495");
+                URL url = new URL(urls[0]);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 try
                 {
@@ -430,29 +460,105 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             catch(Exception e)
             {
                 Log.e("ERROR", e.getMessage(), e);
+                cannotConnect = true;
                 return null;
             }
         }
 
-        protected void onPostExecute(String response)
+
+        protected void getMainInfo(String response)
         {
             if(response == null)
             {
-                response = "{}";
+                Toast.makeText(context, "No reps found!", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                return;
             }
-            progressBar.setVisibility(View.GONE);
+
             Log.i("INFO", response);
             try
             {
                 repsJson = new JSONObject(response);
+                repsCount = repsJson.getInt("count");
+                if (repsCount < 1)
+                {
+                    Toast.makeText(context, "No reps found!", Toast.LENGTH_SHORT).show();
+                }
+
+                String name;
+                Drawable repImageDrawable;
+                String party;
+                String email;
+                String website;
+                String lastTweet;
+
                 JSONArray results = repsJson.getJSONArray("results");
-                JSONObject aRep = (JSONObject) (results.get(0));
-                Log.i("rep website", aRep.getString("website"));
+
+                for (int i = 0; i < repsCount; i++)
+                {
+                    JSONObject currRep = (JSONObject) (results.get(i));
+                    name = currRep.getString("first_name");
+                    try
+                    {
+                        String middleName = currRep.getString("middle_name");
+
+                        if (!middleName.equals("null"))
+                        {
+                            name += " " + middleName;
+                        }
+                    }
+                    catch (JSONException e)
+                    {
+
+                    }
+
+                    name += " " + currRep.getString("last_name");
+
+                    String id = currRep.getString("bioguide_id");
+                    String imgUrl = "https://theunitedstates.io/images/congress/225x275/" + id + ".jpg";
+                    party = currRep.getString("party");
+                    if (party.equals("R"))
+                    {
+                        party = "Republican";
+                    }
+                    else if (party.equals("D"))
+                    {
+                        party = "Democrat";
+                    }
+                    email = currRep.getString("oc_email");
+                    website = currRep.getString("website");
+                    String twitterId = currRep.getString("twitter_id");
+                    lastTweet = "TODO";
+                    String endOfTerm = currRep.getString("term_end");
+
+                    WebRepresentativeInfo currRepInfo = new WebRepresentativeInfo(name,
+                            imgUrl, party, email, website, lastTweet, endOfTerm);
+                    repInfo.add(currRepInfo);
+                }
+
             }
             catch (JSONException e)
             {
                 e.printStackTrace();
             }
+        }
+
+        protected void onPostExecute(String response)
+        {
+            if (cannotConnect)
+            {
+                Toast.makeText(context, "Cannot connect to Congress Database", Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+
+            getMainInfo(response);
+            if (repsCount > 0)
+            {
+                updateRepInfo();
+            }
+
+            progressBar.setVisibility(View.GONE);
         }
     }
 }

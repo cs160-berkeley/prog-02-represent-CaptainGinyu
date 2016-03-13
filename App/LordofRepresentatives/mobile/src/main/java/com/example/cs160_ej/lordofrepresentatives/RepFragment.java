@@ -2,7 +2,10 @@ package com.example.cs160_ej.lordofrepresentatives;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -19,6 +22,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 
 public class RepFragment extends Fragment
@@ -104,21 +111,42 @@ public class RepFragment extends Fragment
         Bundle args = getArguments();
         if (args != null)
         {
-            receivedNameString = args.getString("name", nameText.getText().toString());
-            nameText.setText(receivedNameString);
-
-            receivedPartyString = args.getString("party", partyText.getText().toString());
-            partyText.setText(receivedPartyString);
-            partyImage.setImageDrawable(partiesToLogos.get(receivedPartyString));
-            root.setBackgroundColor(partiesToColors.get(receivedPartyString));
-
-            emailText.setText(args.getString("email", emailText.getText().toString()));
-            tweetText.setText(args.getString("lastTweet", tweetText.getText().toString()));
-            repImage.setImageResource(args.getInt("repImageReference", R.drawable.unknown));
-
-            website = args.getString("website", "404 error: Website not found");
-
             index = args.getString("index", "-1");
+            if (Integer.parseInt(index) >= 0)
+            {
+                WebRepresentativeInfo currRep = Congressional.repInfo.get(Integer.parseInt(index));
+                nameText.setText(currRep.name);
+
+                receivedPartyString = currRep.party;
+                partyText.setText(receivedPartyString);
+                if (partiesToLogos.get(receivedPartyString) == null)
+                {
+                    partyImage.setImageDrawable(partiesToLogos.get("Independent"));
+                }
+                else
+                {
+                    partyImage.setImageDrawable(partiesToLogos.get(receivedPartyString));
+                }
+                if (partiesToColors.get(receivedPartyString) == null)
+                {
+                    root.setBackgroundColor(partiesToColors.get("Independent"));
+                }
+                else
+                {
+                    root.setBackgroundColor(partiesToColors.get(receivedPartyString));
+                }
+
+                emailText.setText(currRep.email);
+                tweetText.setText("None");
+
+                Picasso.with(context).load(currRep.repImgUrl).into(repImage);
+
+                website = args.getString(currRep.website);
+            }
+
+
+
+
         }
 
         visitWebsiteButton.setOnTouchListener(new View.OnTouchListener()
@@ -172,9 +200,12 @@ public class RepFragment extends Fragment
                 if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     pressedViewMoreInfoButton = true;
-                    Intent goToDetailed = new Intent(getActivity(), DetailedInfoActivity.class);
-                    goToDetailed.putExtra("index", index);
-                    startActivity(goToDetailed);
+                    if (Congressional.repInfo.size() > 0)
+                    {
+                        Intent goToDetailed = new Intent(getActivity(), DetailedInfoActivity.class);
+                        goToDetailed.putExtra("index", index);
+                        startActivity(goToDetailed);
+                    }
                 }
 
                 return true;
@@ -182,9 +213,19 @@ public class RepFragment extends Fragment
         });
 
         Intent wearIntent = new Intent(getContext(), MobileToWearService.class);
-        wearIntent.putExtra("name", receivedNameString);
-        wearIntent.putExtra("party", receivedPartyString);
-        wearIntent.putExtra("index", index);
+        if (Congressional.repInfo != null && Congressional.repInfo.size() > 0)
+        {
+            try
+            {
+                wearIntent.putExtra("name", Congressional.repInfo.get(Integer.parseInt(index)).name);
+                wearIntent.putExtra("party", Congressional.repInfo.get(Integer.parseInt(index)).party);
+                wearIntent.putExtra("index", index);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
         Log.i("index", "index at rep fragment is " + index);
         if (index != null)
         {
