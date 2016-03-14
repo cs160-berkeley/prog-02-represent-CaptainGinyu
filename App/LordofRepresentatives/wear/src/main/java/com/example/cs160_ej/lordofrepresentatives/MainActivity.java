@@ -21,47 +21,6 @@ public class MainActivity extends Activity implements SensorEventListener
 
     private final int MIN_SHAKE_SPEED = 30;
 
-    public static ArrayList<RepresentativeInfo> dummyRepInfo;
-    static
-    {
-        dummyRepInfo = new ArrayList<RepresentativeInfo>();
-        RepresentativeInfo rep1 = new RepresentativeInfo(
-                "Ian McDiarmid",
-                R.drawable.palpatine,
-                "Republican",
-                "willBeEmperor@hotmail.com",
-                "emperorpalpatine.com",
-                "Power!!! Unlimited... POWER!!!",
-                new DetailedInfo("May 4, 2066", "The Empire"));
-        rep1.detailedInfo.billsAndDates.put("2005", "Order 66");
-        rep1.detailedInfo.billsAndDates.put("2006", "Death Star Law");
-        rep1.detailedInfo.billsAndDates.put("2010", "Anti-Jedi Law");
-        RepresentativeInfo rep2 = new RepresentativeInfo(
-                "Eric Paulos",
-                R.drawable.paulos,
-                "Democrat",
-                "paulos@paulos.gov",
-                "yourdesignisbad.com",
-                "I bet that your app is full of bad design.",
-                new DetailedInfo("December 31, 2345", "HCI Committee"));
-        rep2.detailedInfo.billsAndDates.put("2004", "Anti-Bad-Design Bill");
-        rep2.detailedInfo.billsAndDates.put("2005", "Anti-Bad-Design Bill Beta");
-        rep2.detailedInfo.billsAndDates.put("2017", "The Good Design Initiative");
-        RepresentativeInfo rep3 = new RepresentativeInfo(
-                "Donald Duck",
-                R.drawable.donald_duck,
-                "Independent",
-                "makedisneygreatagain@makedisneygreatagain.com",
-                "makedisneygreatagain.com",
-                "Quack",
-                new DetailedInfo("January 22, 3000", "The Grand Duck Legion"));
-        rep3.detailedInfo.billsAndDates.put("2052", "Anti-Daffy-Duck Bill");
-        rep3.detailedInfo.billsAndDates.put("2055", "Ultimate Quack Bill");
-        dummyRepInfo.add(rep1);
-        dummyRepInfo.add(rep2);
-        dummyRepInfo.add(rep3);
-    }
-
     private SensorManager manager;
     private Sensor accel;
 
@@ -105,12 +64,17 @@ public class MainActivity extends Activity implements SensorEventListener
                         || (Math.abs(currY - y) >= MIN_SHAKE_SPEED)
                         || (Math.abs(currZ - z) >= MIN_SHAKE_SPEED))
                 {
-                    Log.i("accel", "here");
-                    Log.i("accel", "accel x changed, is now: " + Float.toString(x));
-                    Log.i("accel", "accel y changed, is now: " + Float.toString(y));
-                    Log.i("accel", "accel z changed, is now: " + Float.toString(z));
                     Intent intent = new Intent(getBaseContext(), VoteViewActivity.class);
-                    startActivity(intent);
+                    if (!VoteViewActivity.started)
+                    {
+                        startActivity(intent);
+                    }
+                    else
+                    {
+                        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(intent);
+                        VoteViewActivity.randVote();
+                    }
                 }
             }
 
@@ -118,23 +82,6 @@ public class MainActivity extends Activity implements SensorEventListener
             y = currY;
             z = currZ;
         }
-
-        Thread thread = new Thread()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    Thread.sleep(500);
-                }
-                catch (Exception e)
-                {
-
-                }
-            }
-        };
-        thread.start();
     }
 
     @Override

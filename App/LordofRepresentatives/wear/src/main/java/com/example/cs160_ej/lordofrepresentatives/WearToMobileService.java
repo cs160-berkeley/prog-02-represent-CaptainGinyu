@@ -72,30 +72,59 @@ public class WearToMobileService extends Service implements GoogleApiClient.Conn
             if (extras != null)
             {
                 final String index = extras.getString("index", "-1");
+                final String indexSwipe = extras.getString("index swipe", "-1");
                 Log.i("index", index);
 
-                new Thread(new Runnable()
+                if (extras.getBoolean("button"))
                 {
-
-                    @Override
-                    public void run()
+                    new Thread(new Runnable()
                     {
-                        mWatchApiClient.connect();
-                        Log.i("wear to mobile", "going to go to detailed!");
-                        sendMessage("DetailedInfoActivity", index);
 
-                        try
+                        @Override
+                        public void run()
                         {
-                            Thread.sleep(500);
-                        }
-                        catch (Exception e)
-                        {
+                            mWatchApiClient.connect();
+                            Log.i("wear to mobile", "going to go to detailed!");
+                            sendMessage("DetailedInfoActivity", index);
 
+                            try
+                            {
+                                Thread.sleep(500);
+                            }
+                            catch (Exception e)
+                            {
+
+                            }
+                            _this.stopSelf();
                         }
-                        _this.stopSelf();
-                    }
-                })
-                .start();
+                    })
+                            .start();
+                }
+                else
+                {
+                    new Thread(new Runnable()
+                    {
+
+                        @Override
+                        public void run()
+                        {
+                            mWatchApiClient.connect();
+                            Log.i("wear to mobile", "going to go to cong with " + indexSwipe);
+                            sendMessage("Congressional", indexSwipe);
+
+                            try
+                            {
+                                Thread.sleep(500);
+                            }
+                            catch (Exception e)
+                            {
+
+                            }
+                            _this.stopSelf();
+                        }
+                    })
+                            .start();
+                }
             }
         }
 

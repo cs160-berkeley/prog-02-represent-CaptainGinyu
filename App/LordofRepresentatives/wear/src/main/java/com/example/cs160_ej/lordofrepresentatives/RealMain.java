@@ -30,6 +30,7 @@ public class RealMain extends Activity implements SensorEventListener
     protected String index;
     protected String name;
     protected String party;
+    protected String total;
 
     private float y1, y2;
     private final int MIN_SWIPE_DIST = 50;
@@ -40,7 +41,7 @@ public class RealMain extends Activity implements SensorEventListener
     private float y = Float.NaN;
     private float z = Float.NaN;
 
-    private final int MIN_SHAKE_SPEED = 1;
+    private final int MIN_SHAKE_SPEED = 30;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -83,6 +84,7 @@ public class RealMain extends Activity implements SensorEventListener
                 root.setBackgroundColor(partiesToColors.get(party));
             }
             index = extras.getString("index", "-1");
+            total = extras.getString("total");
             Log.i("real main intent", name);
             Log.i("real main intent", party);
         }
@@ -95,6 +97,7 @@ public class RealMain extends Activity implements SensorEventListener
                 if (event.getAction() == MotionEvent.ACTION_UP)
                 {
                     Intent intent = new Intent(getBaseContext(), WearToMobileService.class);
+                    intent.putExtra("button", true);
                     intent.putExtra("index", index);
                     Log.i("index", "index at real main is " + index);
                     if (index != null)
@@ -128,10 +131,10 @@ public class RealMain extends Activity implements SensorEventListener
                         {
                             Log.i("before index", index);
                             //swipe from top to bottom
-                            int numberIndex = (Integer.parseInt(index) - 1) % MainActivity.dummyRepInfo.size();
+                            int numberIndex = (Integer.parseInt(index) - 1) % Integer.parseInt(total);
                             if (numberIndex < 0)
                             {
-                                numberIndex = MainActivity.dummyRepInfo.size() - 1;
+                                numberIndex = Integer.parseInt(total) - 1;
                             }
                             index = Integer.toString(numberIndex);
                             Log.i("new index", index);
@@ -140,17 +143,23 @@ public class RealMain extends Activity implements SensorEventListener
                         {
                             //swipe from bottom to top
                             Log.i("before index", index);
-                            index = Integer.toString((Integer.parseInt(index) + 1) % MainActivity.dummyRepInfo.size());
+                            index = Integer.toString((Integer.parseInt(index) + 1) % Integer.parseInt(total));
                             Log.i("new index", index);
                         }
 
                         Intent intent = new Intent(RealMain.this, RealMain.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        RepresentativeInfo newRep = MainActivity.dummyRepInfo.get(Integer.parseInt(index));
-                        intent.putExtra("name", newRep.name);
-                        intent.putExtra("party", newRep.party);
                         intent.putExtra("index", index);
+
+                        Intent intentSwipe = new Intent(getBaseContext(), WearToMobileService.class);
+                        intentSwipe.putExtra("button", false);
+                        intentSwipe.putExtra("index swipe", index);
+                        Log.i("index", "index at real main is " + index);
+                        if (index != null)
+                        {
+                            startService(intentSwipe);
+                        }
 
                         startActivity(intent);
                     }
@@ -163,7 +172,7 @@ public class RealMain extends Activity implements SensorEventListener
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-        /*Sensor sensor = event.sensor;
+        Sensor sensor = event.sensor;
 
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
@@ -178,12 +187,17 @@ public class RealMain extends Activity implements SensorEventListener
                         || (Math.abs(currY - y) >= MIN_SHAKE_SPEED)
                         || (Math.abs(currZ - z) >= MIN_SHAKE_SPEED))
                 {
-                    Log.i("accel", "here");
-                    Log.i("accel", "accel x changed, is now: " + Float.toString(x));
-                    Log.i("accel", "accel y changed, is now: " + Float.toString(y));
-                    Log.i("accel", "accel z changed, is now: " + Float.toString(z));
                     Intent intent = new Intent(getBaseContext(), VoteViewActivity.class);
-                    startActivity(intent);
+                    if (!VoteViewActivity.started)
+                    {
+                        startActivity(intent);
+                    }
+                    else
+                    {
+                        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(intent);
+                        VoteViewActivity.randVote();
+                    }
                 }
             }
 
@@ -191,23 +205,6 @@ public class RealMain extends Activity implements SensorEventListener
             y = currY;
             z = currZ;
         }
-
-        Thread thread = new Thread()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    Thread.sleep(500);
-                }
-                catch (Exception e)
-                {
-
-                }
-            }
-        };
-        thread.start();*/
     }
 
     @Override

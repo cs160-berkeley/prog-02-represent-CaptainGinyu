@@ -39,7 +39,8 @@
         <service android:name=".WearToMobileService" />
 
         <activity
-            android:name=".VoteViewActivity"></activity>
+            android:name=".VoteViewActivity"
+            android:launchMode="singleTop"></activity>
     </application>
 
 </manifest>
