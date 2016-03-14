@@ -15,29 +15,32 @@ Kevin Chow ([kvn_chow@berkeley.edu](mailto:kvn_chow@berkeley.edu))
 ## Screenshots
 
 Original design:
+<br>
 <img src="screenshots/Des 2.png" height="400" alt="Screenshot"/>
 
 App with dummy info:
+<br>
 <img src="screenshots/1.png" height="400" alt="Screenshot"/>
 <img src="screenshots/2.png" height="400" alt="Screenshot"/>
 <img src="screenshots/3.png" height="400" alt="Screenshot"/>
-<img src="screenshots/4.png" height="400" alt="Screenshot"/>
-<img src="screenshots/5.png" height="400" alt="Screenshot"/>
-<img src="screenshots/6.png" height="400" alt="Screenshot"/>
-<img src="screenshots/7.png" height="400" alt="Screenshot"/>
-<img src="screenshots/8.png" height="400" alt="Screenshot"/>
-<img src="screenshots/9.png" height="400" alt="Screenshot"/>
-<img src="screenshots/X.png" height="400" alt="Screenshot"/>
-<img src="screenshots/Y.png" height="400" alt="Screenshot"/>
+<img src="screenshots/4.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/5.png" height="400" alt="Screenshot"/>v
+<img src="screenshots/6.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/7.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/8.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/9.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/X.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/Y.png" height="400" alt="Screenshot"/><br>
 
 App with less dummy info:
-<img src="screenshots/Screenshot_2016-03-14-00-05-30.png" height="400" alt="Screenshot"/>
-<img src="screenshots/Screenshot_2016-03-14-00-06-30.png" height="400" alt="Screenshot"/>
-<img src="screenshots/Screenshot_2016-03-14-00-06-35.png" height="400" alt="Screenshot"/>
-<img src="screenshots/Screenshot_2016-03-14-00-07-08.png" height="400" alt="Screenshot"/>
-<img src="screenshots/Screenshot_2016-03-14-00-08-23.png" height="400" alt="Screenshot"/>
-<img src="20160314_000859.jpg" height="400" alt="Screenshot"/>
-<img src="20160314_000922.jpg" height="400" alt="Screenshot"/>
+<br>
+<img src="screenshots/Screenshot_2016-03-14-00-05-30.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/Screenshot_2016-03-14-00-06-30.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/Screenshot_2016-03-14-00-06-35.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/Screenshot_2016-03-14-00-07-08.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/Screenshot_2016-03-14-00-08-23.png" height="400" alt="Screenshot"/><br>
+<img src="screenshots/20160314_000859.jpg" height="400" alt="Screenshot"/><br>
+<img src="screenshots/20160314_000922.jpg" height="400" alt="Screenshot"/><br>
 
 As you may notice, I changed some aspects of design from my original plan.  Some text (like email text) were replaced with buttons.
 
@@ -48,4 +51,4 @@ As you may notice, I changed some aspects of design from my original plan.  Some
 ### Images used
 * [http://images.clipartpanda.com/ms-office-clipart-292945.jpg] (http://images.clipartpanda.com/ms-office-clipart-292945.jpg)
 * [http://images.all-free-download.com/images/graphicmedium/hooded_cartoon_character_ii_117679.jpg] (http://images.all-free-download.com/images/graphicmedium/hooded_cartoon_character_ii_117679.jpg)
-* Other random images from Google Image
+* Other random images from Google Images
