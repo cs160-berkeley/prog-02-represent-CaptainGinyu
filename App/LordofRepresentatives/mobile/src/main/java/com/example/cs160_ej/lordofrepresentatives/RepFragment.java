@@ -47,12 +47,13 @@ public class RepFragment extends Fragment
 
     protected TextView nameText;
     protected TextView partyText;
-    protected TextView emailText;
 
     protected Button visitWebsiteButton;
     protected Button viewMoreInfoButton;
     protected int visitWebsiteButtonColor;
     protected int viewMoreInfoButtonColor;
+    protected Button sendEmailButton;
+    protected int sendEmailButtonColor;
 
     protected ImageView repImage;
     protected ImageView partyImage;
@@ -99,14 +100,15 @@ public class RepFragment extends Fragment
 
         nameText = (TextView) view.findViewById(R.id.repName);
         partyText = (TextView) view.findViewById(R.id.partyName);
-        emailText = (TextView) view.findViewById(R.id.repEmail);
 
         root = (FrameLayout) view.findViewById(R.id.root);
 
         visitWebsiteButton = (Button) view.findViewById(R.id.visitWebsiteButton);
         viewMoreInfoButton = (Button) view.findViewById(R.id.viewMoreInfoButton);
+        sendEmailButton = (Button) view.findViewById(R.id.sendEmail);
         visitWebsiteButtonColor = ((ColorDrawable) visitWebsiteButton.getBackground()).getColor();
         viewMoreInfoButtonColor = ((ColorDrawable) viewMoreInfoButton.getBackground()).getColor();
+        sendEmailButtonColor = ((ColorDrawable) sendEmailButton.getBackground()).getColor();
 
         goingToWebsite = false;
         pressedViewMoreInfoButton = false;
@@ -145,7 +147,21 @@ public class RepFragment extends Fragment
                     root.setBackgroundColor(partiesToColors.get(receivedPartyString));
                 }
 
-                emailText.setText(currRep.email);
+                sendEmailButton.setOnTouchListener(new View.OnTouchListener()
+                {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event)
+                    {
+                        changeButtonColor(v, event, sendEmailButtonColor);
+                        if (event.getAction() == MotionEvent.ACTION_UP)
+                        {
+                            Intent emailIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + currRep.email));
+                            startActivity(emailIntent);
+                        }
+
+                        return false;
+                    }
+                });
 
                 TwitterCore.getInstance().logInGuest(new Callback<AppSession>()
                 {
@@ -221,34 +237,17 @@ public class RepFragment extends Fragment
 
                 if (!goingToWebsite)
                 {
-                    //Toast.makeText(getActivity(), website, Toast.LENGTH_SHORT).show();
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(website));
                     startActivity(browserIntent);
 
                     goingToWebsite = true;
-                    /*Thread thread = new Thread()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            try
-                            {
-                                Thread.sleep(SHORT_TOAST_DURATION);
-                                goingToWebsite = false;
-                            }
-                            catch (Exception e)
-                            {
-
-                            }
-                        }
-                    };
-                    thread.start();*/
                 }
 
                 return true;
             }
         });
-        viewMoreInfoButton.setOnTouchListener(new View.OnTouchListener() {
+        viewMoreInfoButton.setOnTouchListener(new View.OnTouchListener()
+        {
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {

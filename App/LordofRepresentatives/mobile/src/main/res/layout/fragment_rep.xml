@@ -74,32 +74,31 @@
                 android:minWidth="20dp" />
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Unknown Email"
-            android:id="@+id/repEmail"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/partyInfo"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="16dp"
-            android:textColor="#444444"
-            android:textSize="14dp" />
-
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Visit Website"
             android:id="@+id/visitWebsiteButton"
-            android:layout_below="@+id/repEmail"
+            android:layout_below="@+id/sendEmail"
             android:layout_centerHorizontal="true"
             android:background="#0084ff"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
             android:padding="5dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send Email"
+            android:id="@+id/sendEmail"
+            android:layout_centerHorizontal="true"
+            android:background="#0084ff"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:padding="5dp"
+            android:layout_below="@+id/partyInfo"/>
 
         <FrameLayout
             android:layout_width="wrap_content"

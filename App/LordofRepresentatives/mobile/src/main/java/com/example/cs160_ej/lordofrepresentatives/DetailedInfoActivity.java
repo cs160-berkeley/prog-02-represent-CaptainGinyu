@@ -3,7 +3,9 @@ package com.example.cs160_ej.lordofrepresentatives;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,7 +38,6 @@ public class DetailedInfoActivity extends AppCompatActivity
 {
     protected TextView nameText;
     protected TextView partyText;
-    protected TextView emailText;
     protected TextView committeeText;
     protected TextView billsText;
     protected TextView endOfTermText;
@@ -46,6 +49,9 @@ public class DetailedInfoActivity extends AppCompatActivity
     protected HashMap<String, Integer> partiesToColors;
 
     protected ProgressBar progressBar;
+
+    protected Button sendEmailButton;
+    protected int sendEmailButtonColor;
 
     int index;
 
@@ -81,9 +87,11 @@ public class DetailedInfoActivity extends AppCompatActivity
         repImage = (ImageView) findViewById(R.id.repImage);
         partyImage = (ImageView) findViewById(R.id.partyImage);
         endOfTermText = (TextView) findViewById(R.id.endOfTerm);
-        emailText = (TextView) findViewById(R.id.repEmail);
         committeeText = (TextView) findViewById(R.id.committee);
         billsText = (TextView) findViewById(R.id.billsList);
+
+        sendEmailButton = (Button) findViewById(R.id.sendEmail);
+        sendEmailButtonColor = ((ColorDrawable) sendEmailButton.getBackground()).getColor();
 
         Intent receivedIntent = getIntent();
 
@@ -97,14 +105,27 @@ public class DetailedInfoActivity extends AppCompatActivity
 
                 if (index > -1)
                 {
-                    WebRepresentativeInfo currRep = Congressional.repInfo.get(index);
-                    //DetailedInfo repDetailedInfo = currRep.detailedInfo;
+                    final WebRepresentativeInfo currRep = Congressional.repInfo.get(index);
                     nameText.setText(currRep.name);
                     partyText.setText(currRep.party);
                     Picasso.with(context).load(currRep.repImgUrl).into(repImage);
                     partyImage.setImageDrawable(partiesToLogos.get(currRep.party));
                     endOfTermText.setText("End of Term: " + currRep.endOfTerm);
-                    emailText.setText(currRep.email);
+                    sendEmailButton.setOnTouchListener(new View.OnTouchListener()
+                    {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event)
+                        {
+                            changeButtonColor(v, event, sendEmailButtonColor);
+                            if (event.getAction() == MotionEvent.ACTION_UP)
+                            {
+                                Intent emailIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + currRep.email));
+                                startActivity(emailIntent);
+                            }
+
+                            return false;
+                        }
+                    });
 
                     Log.i("curr bio id", currRep.bio_id);
                     new HandleApiStuff(context, "committee").execute(currRep.bio_id);
@@ -121,6 +142,20 @@ public class DetailedInfoActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    public boolean changeButtonColor(View view, MotionEvent motionEvent, int origColor)
+    {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+        {
+            ((Button) view).setBackgroundColor(Color.GREEN);
+        }
+        else
+        {
+            ((Button) view).setBackgroundColor(origColor);
+        }
+
+        return true;
     }
 
     private class HandleApiStuff extends AsyncTask<String, Void, String>
