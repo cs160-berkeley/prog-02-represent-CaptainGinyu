@@ -241,4 +241,12 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     {
         return testValue.length() == 5;
     }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        finish();
+    }
+
 }

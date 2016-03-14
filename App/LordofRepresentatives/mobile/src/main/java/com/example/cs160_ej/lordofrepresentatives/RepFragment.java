@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -220,9 +221,12 @@ public class RepFragment extends Fragment
 
                 if (!goingToWebsite)
                 {
-                    Toast.makeText(getActivity(), website, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), website, Toast.LENGTH_SHORT).show();
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(website));
+                    startActivity(browserIntent);
+
                     goingToWebsite = true;
-                    Thread thread = new Thread()
+                    /*Thread thread = new Thread()
                     {
                         @Override
                         public void run()
@@ -238,7 +242,7 @@ public class RepFragment extends Fragment
                             }
                         }
                     };
-                    thread.start();
+                    thread.start();*/
                 }
 
                 return true;

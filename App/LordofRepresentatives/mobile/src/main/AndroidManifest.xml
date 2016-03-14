@@ -21,7 +21,8 @@
         <activity
             android:name=".Congressional"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleInstance"/>
         <activity android:name=".RepFragmentActivity" />
 
         <service android:name=".MobileToWearService" />

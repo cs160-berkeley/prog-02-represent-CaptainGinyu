@@ -115,6 +115,7 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
             progressBar.setVisibility(View.VISIBLE);
             mGoogleApiClient.connect();
         }
+        Log.i("started", "started");
     }
 
     @Override
@@ -125,15 +126,27 @@ public class Congressional extends AppCompatActivity implements ConnectionCallba
         {
             mGoogleApiClient.disconnect();
         }
+        finish();
+        Log.i("stopped", "stopped");
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        Log.i("resumed", "resumed");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Log.i("intent", Boolean.toString(getIntent() == null));
         setContentView(R.layout.activity_congressional);
         Toolbar actionBar = (Toolbar) findViewById(R.id.actionBar);
         setSupportActionBar(actionBar);
+
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Reps Viewer");
