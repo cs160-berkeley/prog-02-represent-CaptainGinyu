@@ -48,7 +48,8 @@ As you may notice, I changed some aspects of design from my original plan.  Some
  * Catnip sample code provided by the CS 160 staff!
  * Various answered questions on StackOverflow
  * Android documentation
-### Images used
+
+## Images used
 * [http://images.clipartpanda.com/ms-office-clipart-292945.jpg] (http://images.clipartpanda.com/ms-office-clipart-292945.jpg)
 * [http://images.all-free-download.com/images/graphicmedium/hooded_cartoon_character_ii_117679.jpg] (http://images.all-free-download.com/images/graphicmedium/hooded_cartoon_character_ii_117679.jpg)
 * Other random images from Google Images
